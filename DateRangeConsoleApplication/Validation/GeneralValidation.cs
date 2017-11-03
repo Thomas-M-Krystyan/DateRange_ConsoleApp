@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Globalization;
 using DateRangeConsoleApplication.UI;
 using static DateRangeConsoleApplication.UI.Messages.EnglishMessages;
 
@@ -8,15 +8,24 @@ namespace DateRangeConsoleApplication.Validation
 {
     internal class GeneralValidation<T, TN> where TN : IComparable<TN>
     {
-        // Methods
-        internal IList<T> ProcessInputData(IList<T> arguments, TN numberOfArguments)
-        {
-            IList<T> result = new Collection<T>();
+        // Delegates
+        private Action<IList<T>, TN> _validationAction;
 
+        // Controllers
+        internal bool ProcessInputData(IList<T> arguments, TN numberOfArguments)
+        {
+            _validationAction = ValidNumberOfArguments;
+            _validationAction += ValidDateTimeFormat;
+
+            return ValidationResult(_validationAction, arguments, numberOfArguments);
+        }
+
+        // Methods
+        private static bool ValidationResult(Action<IList<T>, TN> validationCriteria, IList<T> arguments, TN numberOfArguments)
+        {
             try
             {
-                ValidNumberOfArguments(arguments, numberOfArguments);
-                ValidDateTimeFormat(arguments);
+                validationCriteria(arguments, numberOfArguments);
             }
             catch (Exception exception)
             {
@@ -24,11 +33,11 @@ namespace DateRangeConsoleApplication.Validation
                 Console.ReadKey();
             }
 
-            return result;
+            return true;
         }
 
         #region Number of arguments
-        private static bool ValidNumberOfArguments(IList<T> arguments, TN numberOfArguments)
+        private static void ValidNumberOfArguments(IList<T> arguments, TN numberOfArguments)
         {
             if (arguments == null)
             {
@@ -47,18 +56,21 @@ namespace DateRangeConsoleApplication.Validation
                 throw new ArgumentOutOfRangeException(nameof(arguments), Utilities.DisplayInColor(
                                                                                             ErrorToMuchArguments(numberOfArguments)));
             }
-
-            return true;
         }
         #endregion
 
-        #region Proper data format
-        private static void ValidDateTimeFormat(IList<T> arguments)
+        #region Proper date format
+        private static void ValidDateTimeFormat(IList<T> arguments, TN numberOfArguments)
         {
-            foreach (var element in arguments)
-            {
-                Console.WriteLine(element);
-            }
+            var culture = CultureInfo.CurrentUICulture;
+            Console.WriteLine(culture.DateTimeFormat);
+//            foreach (var element in arguments)
+//            {
+//                DateTime.TryParseExact(element, System.Globalization.CultureInfo.InvariantCulture,
+//                    System.Globalization.DateTimeStyles.NoCurrentDateDefault, out element);
+//            }
+
+
         }
         #endregion
     }
