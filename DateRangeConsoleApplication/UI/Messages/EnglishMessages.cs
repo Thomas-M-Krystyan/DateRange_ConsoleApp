@@ -15,5 +15,7 @@
         {
             return $"Collection has more than {value} arguments";
         }
+
+        internal const string ErrorWrongMessageColor = "There is no such message color!";
     }
 }

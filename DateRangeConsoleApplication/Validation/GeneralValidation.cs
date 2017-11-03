@@ -8,9 +8,6 @@ namespace DateRangeConsoleApplication.Validation
 {
     internal class GeneralValidation<T, TN> where TN : IComparable<TN>
     {
-        // Constants
-        private const string ErrorMessageColor = "red";
-
         // Methods
         internal IList<T> ProcessInputData(IList<T> arguments, TN numberOfArguments)
         {
@@ -19,6 +16,7 @@ namespace DateRangeConsoleApplication.Validation
             try
             {
                 ValidNumberOfArguments(arguments, numberOfArguments);
+                ValidDateTimeFormat(arguments);
             }
             catch (Exception exception)
             {
@@ -34,26 +32,33 @@ namespace DateRangeConsoleApplication.Validation
         {
             if (arguments == null)
             {
-                throw new ArgumentNullException(nameof(arguments),
-                                                Utilities.DisplayColor(message: ErrorNullCollection, color: ErrorMessageColor));
+                throw new ArgumentNullException(nameof(arguments), Utilities.DisplayInColor(ErrorNullCollection));
             }
             if (arguments.Count == 0)
             {
-                throw new ArgumentException(Utilities.DisplayColor(message: ErrorEmptyCollection, color: ErrorMessageColor),                                     nameof(arguments));
+                throw new ArgumentException(Utilities.DisplayInColor(ErrorEmptyCollection), nameof(arguments));
             }
             if (arguments.Count.CompareTo(numberOfArguments) < 0)
             {
-                throw new ArgumentException(Utilities.DisplayColor(message: ErrorNotEnoughArguments(numberOfArguments),
-                                                                   color: ErrorMessageColor), nameof(arguments));
+                throw new ArgumentException(Utilities.DisplayInColor(ErrorNotEnoughArguments(numberOfArguments)), nameof(arguments));
             }
             if (arguments.Count.CompareTo(numberOfArguments) > 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(arguments), 
-                                                      Utilities.DisplayColor(message: ErrorToMuchArguments(numberOfArguments),
-                                                                             color: ErrorMessageColor));
+                throw new ArgumentOutOfRangeException(nameof(arguments), Utilities.DisplayInColor(
+                                                                                            ErrorToMuchArguments(numberOfArguments)));
             }
 
             return true;
+        }
+        #endregion
+
+        #region Proper data format
+        private static void ValidDateTimeFormat(IList<T> arguments)
+        {
+            foreach (var element in arguments)
+            {
+                Console.WriteLine(element);
+            }
         }
         #endregion
     }
