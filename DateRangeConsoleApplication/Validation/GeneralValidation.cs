@@ -1,27 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace DateRangeConsoleApplication.Validation
 {
-    internal class GeneralValidation<TCollection, TArgNumbers>
+    internal class GeneralValidation<T, TN>
     {
-        internal TCollection[] ProcessInputData(TCollection[] arguments, TArgNumbers numberOfArguments)
+        internal IList<T> ProcessInputData(IList<T> arguments, TN validNumOfArguments)
         {
 
 
             return null;
         }
 
-        private bool NumberOfArgumentsValidation(TCollection[] arguments, TArgNumbers numberOfArguments)
+        private bool NumberOfArgumentsValidation(IList<T> arguments, TN validNumOfArguments)
         {
             if (arguments == null)
             {
                 Console.WriteLine("ERROR: Null!");
             }
-            else if (arguments.Length < 2)
+            else if (arguments.Count < 2)
             {
                 Console.WriteLine("ERROR: Less than two elements!");
             }
-            else if (arguments.Length > 1 && arguments.Length < 3)
+            else if (arguments.Count > 1 && arguments.Count < 3)
             {
                 Console.WriteLine("OK: Two elements");
                 foreach (var element in arguments)
