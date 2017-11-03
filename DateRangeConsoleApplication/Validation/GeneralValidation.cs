@@ -3,40 +3,38 @@ using System.Collections.Generic;
 
 namespace DateRangeConsoleApplication.Validation
 {
-    internal class GeneralValidation<T, TN>
+    internal class GeneralValidation<T, TN> where TN : IComparable<TN>
     {
-        internal IList<T> ProcessInputData(IList<T> arguments, TN validNumOfArguments)
+        internal IList<T> ProcessInputData(IList<T> arguments, TN numberOfArguments)
         {
+            try
+            {
+                Console.WriteLine(ValidNumberOfArguments(arguments, numberOfArguments));
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
 
-
+            Console.ReadKey();
             return null;
         }
 
-        private bool NumberOfArgumentsValidation(IList<T> arguments, TN validNumOfArguments)
+        private static bool ValidNumberOfArguments(IList<T> arguments, TN numberOfArguments)
         {
             if (arguments == null)
             {
-                Console.WriteLine("ERROR: Null!");
+                throw new NullReferenceException();
             }
-            else if (arguments.Count < 2)
+            if (arguments.Count.CompareTo(numberOfArguments) < 0)
             {
-                Console.WriteLine("ERROR: Less than two elements!");
+                throw new IndexOutOfRangeException($"Less than {numberOfArguments} arguments");
             }
-            else if (arguments.Count > 1 && arguments.Count < 3)
+            if (arguments.Count.CompareTo(numberOfArguments) > 0)
             {
-                Console.WriteLine("OK: Two elements");
-                foreach (var element in arguments)
-                {
-                    Console.WriteLine(element);
-                }
+                throw new IndexOutOfRangeException($"More than {numberOfArguments} arguments");
             }
-            else
-            {
-                Console.WriteLine("ERROR: More than two elements!");
-            }
-            Console.ReadLine();
-
-            return false;
+            return true;
         }
     }
 }
