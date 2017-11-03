@@ -2,9 +2,7 @@
 {
     internal static class EnglishMessages
     {
-        // ------------------------------------------------------------------------------
         // Error Messages
-        // ------------------------------------------------------------------------------
         internal const string ErrorNullCollection = "There is no collection!";
         internal const string ErrorEmptyCollection = "Collection cannot be empty!";
         

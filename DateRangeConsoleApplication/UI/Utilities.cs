@@ -4,6 +4,7 @@ namespace DateRangeConsoleApplication.UI
 {
     internal static class Utilities
     {
+        // Methods
         internal static string DisplayColor(string message, string color)
         {
             switch (color.ToLower())
@@ -21,6 +22,7 @@ namespace DateRangeConsoleApplication.UI
                     Console.ForegroundColor = ConsoleColor.Gray;
                     break;
             }
+
             return message;
         }
     }

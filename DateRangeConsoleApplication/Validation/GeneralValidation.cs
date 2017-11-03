@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using DateRangeConsoleApplication.UI;
 using static DateRangeConsoleApplication.UI.Messages.EnglishMessages;
 
@@ -7,21 +8,25 @@ namespace DateRangeConsoleApplication.Validation
 {
     internal class GeneralValidation<T, TN> where TN : IComparable<TN>
     {
+        // Constants
         private const string ErrorMessageColor = "red";
 
+        // Methods
         internal IList<T> ProcessInputData(IList<T> arguments, TN numberOfArguments)
         {
+            IList<T> result = new Collection<T>();
+
             try
             {
-                Console.WriteLine(ValidNumberOfArguments(arguments, numberOfArguments));
+                ValidNumberOfArguments(arguments, numberOfArguments);
             }
             catch (Exception exception)
             {
                 Console.WriteLine(exception.Message);
+                Console.ReadKey();
             }
 
-            Console.ReadKey();
-            return null;
+            return result;
         }
 
         #region Number of arguments
