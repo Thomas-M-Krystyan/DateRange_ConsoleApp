@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using DateRangeConsoleApplication.UI;
+using static DateRangeConsoleApplication.UI.Messages.EnglishMessages;
 
 namespace DateRangeConsoleApplication.Validation
 {
     internal class GeneralValidation<T, TN> where TN : IComparable<TN>
     {
+        private const string ErrorMessageColor = "red";
+
         internal IList<T> ProcessInputData(IList<T> arguments, TN numberOfArguments)
         {
             try
@@ -20,26 +24,32 @@ namespace DateRangeConsoleApplication.Validation
             return null;
         }
 
+        #region Number of arguments
         private static bool ValidNumberOfArguments(IList<T> arguments, TN numberOfArguments)
         {
             if (arguments == null)
             {
-                throw new ArgumentNullException($"There is no collection!");
+                throw new ArgumentNullException(nameof(arguments),
+                                                Utilities.DisplayColor(message: ErrorNullCollection, color: ErrorMessageColor));
             }
             if (arguments.Count == 0)
             {
-                throw new ArgumentException($"Collection \"{nameof(arguments)}\" cannot be empty!");
+                throw new ArgumentException(Utilities.DisplayColor(message: ErrorEmptyCollection, color: ErrorMessageColor),                                     nameof(arguments));
             }
             if (arguments.Count.CompareTo(numberOfArguments) < 0)
             {
-                throw new ArgumentException($"Collection \"{nameof(arguments)}\" has less than {numberOfArguments} arguments");
+                throw new ArgumentException(Utilities.DisplayColor(message: ErrorNotEnoughArguments(numberOfArguments),
+                                                                   color: ErrorMessageColor), nameof(arguments));
             }
             if (arguments.Count.CompareTo(numberOfArguments) > 0)
             {
-                throw new ArgumentOutOfRangeException($"Collection \"{nameof(arguments)}\" has more than {numberOfArguments} arguments");
+                throw new ArgumentOutOfRangeException(nameof(arguments), 
+                                                      Utilities.DisplayColor(message: ErrorToMuchArguments(numberOfArguments),
+                                                                             color: ErrorMessageColor));
             }
 
             return true;
         }
+        #endregion
     }
 }
