@@ -24,16 +24,21 @@ namespace DateRangeConsoleApplication.Validation
         {
             if (arguments == null)
             {
-                throw new NullReferenceException();
+                throw new ArgumentNullException($"There is no collection!");
+            }
+            if (arguments.Count == 0)
+            {
+                throw new ArgumentException($"Collection \"{nameof(arguments)}\" cannot be empty!");
             }
             if (arguments.Count.CompareTo(numberOfArguments) < 0)
             {
-                throw new IndexOutOfRangeException($"Less than {numberOfArguments} arguments");
+                throw new ArgumentException($"Collection \"{nameof(arguments)}\" has less than {numberOfArguments} arguments");
             }
             if (arguments.Count.CompareTo(numberOfArguments) > 0)
             {
-                throw new IndexOutOfRangeException($"More than {numberOfArguments} arguments");
+                throw new ArgumentOutOfRangeException($"Collection \"{nameof(arguments)}\" has more than {numberOfArguments} arguments");
             }
+
             return true;
         }
     }
