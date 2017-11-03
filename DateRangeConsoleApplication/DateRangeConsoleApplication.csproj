@@ -45,6 +45,7 @@
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\Messages\EnglishMessages.cs" />
     <Compile Include="Validation\GeneralValidation.cs" />
   </ItemGroup>
   <ItemGroup>

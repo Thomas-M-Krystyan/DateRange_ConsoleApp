@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using static DateRangeConsoleApplication.UI.Messages.EnglishMessages;
 
 namespace DateRangeConsoleApplication.Validation
 {
@@ -24,19 +25,19 @@ namespace DateRangeConsoleApplication.Validation
         {
             if (arguments == null)
             {
-                throw new ArgumentNullException($"There is no collection!");
+                throw new ArgumentNullException(nameof(arguments), ErrorNullCollection);
             }
             if (arguments.Count == 0)
             {
-                throw new ArgumentException($"Collection \"{nameof(arguments)}\" cannot be empty!");
+                throw new ArgumentException(ErrorEmptyCollection, nameof(arguments));
             }
             if (arguments.Count.CompareTo(numberOfArguments) < 0)
             {
-                throw new ArgumentException($"Collection \"{nameof(arguments)}\" has less than {numberOfArguments} arguments");
+                throw new ArgumentException(ErrorNotEnoughArguments(numberOfArguments), nameof(arguments));
             }
             if (arguments.Count.CompareTo(numberOfArguments) > 0)
             {
-                throw new ArgumentOutOfRangeException($"Collection \"{nameof(arguments)}\" has more than {numberOfArguments} arguments");
+                throw new ArgumentOutOfRangeException(nameof(arguments), ErrorToMuchArguments(numberOfArguments));
             }
 
             return true;
