@@ -10,7 +10,10 @@ namespace DateRangeConsoleApplication.Controllers
         internal void Start(IList<T> arguments, TN numberOfArguments)
         {
             var validation = new GeneralValidation<T, TN>();
-            validation.ProcessInputData(arguments, numberOfArguments);
+            if (validation.ProcessInputData(arguments, numberOfArguments))
+            {
+                
+            }
         }
     }
 }
