@@ -21,7 +21,7 @@ namespace DateRangeConsoleApplication.Controllers
 
             if (ValidationResult(validationCriteria, new object[]{}))
             {
-                ConversionController<T, TN> conversion = new ConversionController<T, TN>();
+                ConversionController<T> conversion = new ConversionController<T>();
                 IList<T> converteData = conversion.ProcessInputData(collection, currentCulture);
             }
             return true;
