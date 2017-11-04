@@ -25,7 +25,8 @@ namespace DateRangeConsoleApplication.UI.Messages
         {
             Type dateTimeType = typeof(DateTime);
 
-            return $"ERROR: Input \"{inputValue}\" isn't convertible to {dateTimeType} format";
+            return $"ERROR: Input \"{inputValue}\" isn't convertible to {dateTimeType} format\n" +
+                   $"(possible: incorrect data type, misspellings, or given date does not exist)!";
         }
 
         internal static string ErrorWrongInputFormat(object inputValue, CultureInfo currentCulture)
@@ -40,7 +41,7 @@ namespace DateRangeConsoleApplication.UI.Messages
             string exampleLongDateFormat = date.ToString("D", currentCulture);
 
             return $"ERROR: Your input \"{inputValue}\" cannot be converted to {dateTimeType} format\n" +
-                   $"(e.g. you give invalid data type or use wrong date separator, instead of \"{cultureDateSeparator}\")\n" +
+                   $"(e.g. you given invalid data type or use wrong date separator instead of \"{cultureDateSeparator}\")\n" +
                    $"or given date does not exist (e.g. wrong day, month, or year is out of range)!\n\n" +
 
                    $"Your system language is:\n" +
