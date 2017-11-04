@@ -79,7 +79,7 @@ namespace DateRangeConsoleApplication.Controllers
             {
                 if (!TryParseDateTime(element, currentCulture, out date))
                 {
-                    throw new FormatException(Utilities.DisplayInColor(ErrorInputNotConvertible(element)));
+                    throw new FormatException(Utilities.DisplayInColor(message: ErrorInputNotConvertible(element)));
                 }
             }
         }
