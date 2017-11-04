@@ -40,7 +40,7 @@ namespace DateRangeConsoleApplication.UI.Messages
             string exampleShortDateFormat = date.ToString("d", currentCulture);
             string exampleLongDateFormat = date.ToString("D", currentCulture);
 
-            return $"ERROR: Your input \"{inputValue}\" cannot be converted to {dateTimeType} format\n" +
+            return $"ERROR: Input \"{inputValue}\" cannot be converted to local {dateTimeType} format\n" +
                    $"(e.g. you given invalid data type or use wrong date separator instead of \"{cultureDateSeparator}\")\n" +
                    $"or given date does not exist (e.g. wrong day, month, or year is out of range)!\n\n" +
 
