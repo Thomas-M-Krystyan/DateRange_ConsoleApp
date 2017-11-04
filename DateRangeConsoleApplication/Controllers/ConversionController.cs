@@ -4,51 +4,57 @@ using System.Globalization;
 
 namespace DateRangeConsoleApplication.Controllers
 {
-    internal class ConversionController<T, TN> where T : IComparable
+    internal class ConversionController<T, TN> : ValidationController<T, TN> where T : IComparable
     {
-        // Constants
-        private const string DateTimeIsShort = "short";
-        private const string DateTimeIsLong = "long";
-
         // Controllers
-        internal IList<T> ProcessInputData(IList<T> collection)
+        internal IList<T> ProcessInputData(IList<T> collection, CultureInfo currentCulture)
         {
-            IList<T> convertedDateCollection = ParseToSpecificCollection(collection);
-
+            IList<DateTime> convertedDateCollection = ConvertInputsToDateTime(collection, currentCulture);
+            
             return null;
         }
 
         // Methods
-        private static string RecogniseDateFormat(T element, CultureInfo currentCulture, out DateTime date)
+        private static IList<DateTime> ConvertInputsToDateTime(IList<T> collection, CultureInfo currentCulture)
         {
-            if (DateTime.TryParseExact(element.ToString(), currentCulture.DateTimeFormat.ShortDatePattern,
-                currentCulture, DateTimeStyles.AssumeLocal, out date))
+            bool collectionIsReadOnly;
+            IList<DateTime> convertedDateCollection = ParseToSpecificCollection(collection, out collectionIsReadOnly);
+
+            DateTime date;
+            for (int i = 0; i < collection.Count; i++)
             {
-                return DateTimeIsShort;
-            }
-            if (DateTime.TryParseExact(element.ToString(), currentCulture.DateTimeFormat.LongDatePattern,
-                currentCulture, DateTimeStyles.AssumeLocal, out date))
-            {
-                return DateTimeIsLong;
+                if (collectionIsReadOnly)
+                {
+                    TryParseExactDateTime(collection[i], currentCulture, out date);
+                    convertedDateCollection[i] = date;
+                }
+                else
+                {
+                    TryParseExactDateTime(collection[i], currentCulture, out date);
+                    convertedDateCollection.Add(date);
+                }
             }
 
-            return string.Empty;
+            return convertedDateCollection;
         }
         
         /// <summary>
-         /// Returns specific instance of generic collection, based on input collection type (e.g. array / list)
-         /// </summary>
-        private static IList<T> ParseToSpecificCollection(IList<T> collection)
+        /// Returns specific instance of generic collection and information
+        /// if IsReadOnly, based on input collection type (e.g. array / list)
+        /// </summary>
+        private static IList<DateTime> ParseToSpecificCollection(IList<T> collection, out bool collectionIsReadOnly)
         {
-            IList<T> parsedCollection;
-
+            IList<DateTime> parsedCollection;
+            
             if (collection.IsReadOnly)
             {
-                parsedCollection = new T[collection.Count];
+                collectionIsReadOnly = true;
+                parsedCollection = new DateTime[collection.Count];
             }
             else
             {
-                parsedCollection = new List<T>();
+                collectionIsReadOnly = false;
+                parsedCollection = new List<DateTime>();
             }
 
             return parsedCollection;
