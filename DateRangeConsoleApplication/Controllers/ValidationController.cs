@@ -23,12 +23,12 @@ namespace DateRangeConsoleApplication.Controllers
 
             // Add new validation method
             ConversionController<T, TN> converter = new ConversionController<T, TN>();
-            IList<DateTime> convertedCollection = converter.ProcessInputData(collection, currentCulture);
-            validationCriteria += delegate { CompareDateTimeValues(convertedCollection); };
+            IList<DateTime> convertedDateCollection = converter.ProcessInputData(collection, currentCulture);
+            validationCriteria += delegate { CompareDateTimeValues(convertedDateCollection); };
 
             if (ValidationResult(validationCriteria, new object[] { }))
             {
-                return convertedCollection;
+                return convertedDateCollection;
             }
             throw new NullReferenceException(Utilities.DisplayInColor(message: ErrorValidationFailed));
         }
