@@ -21,10 +21,11 @@ namespace DateRangeConsoleApplication.Validation
             ParamsAction validationCriteria = delegate { ValidNumberOfArguments(arguments, numberOfArguments); };
             validationCriteria += delegate { ValidDateTimeFormat(arguments); };
 
-            return ValidationResult(validationCriteria, new object[] { arguments, numberOfArguments });
+            return ValidationResult(validationCriteria, new object[]{ arguments, numberOfArguments });
         }
 
         // Methods
+        #region Handling exceptions
         private static bool ValidationResult(ParamsAction validationCriteria, object[] parameters)
         {
             try
@@ -39,31 +40,35 @@ namespace DateRangeConsoleApplication.Validation
 
             return true;
         }
+        #endregion
 
-        #region Number of arguments
+        #region Validation: Number of arguments
         private static void ValidNumberOfArguments(IList<T> arguments, TN numberOfArguments)
         {
             if (arguments == null)
             {
-                throw new ArgumentNullException(nameof(arguments), Utilities.DisplayInColor(ErrorNullCollection));
+                throw new ArgumentNullException(nameof(arguments),
+                                                Utilities.DisplayInColor(message: ErrorNullCollection));
             }
             if (arguments.Count == 0)
             {
-                throw new ArgumentException(Utilities.DisplayInColor(ErrorEmptyCollection), nameof(arguments));
+                throw new ArgumentException(Utilities.DisplayInColor(message: ErrorEmptyCollection),
+                                            nameof(arguments));
             }
             if (arguments.Count.CompareTo(numberOfArguments) < 0)
             {
-                throw new ArgumentException(Utilities.DisplayInColor(ErrorNotEnoughArguments(numberOfArguments)), nameof(arguments));
+                throw new ArgumentException(Utilities.DisplayInColor(message: ErrorNotEnoughArguments(numberOfArguments)),
+                                            nameof(arguments));
             }
             if (arguments.Count.CompareTo(numberOfArguments) > 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(arguments), Utilities.DisplayInColor(
-                                                                                            ErrorToMuchArguments(numberOfArguments)));
+                throw new ArgumentOutOfRangeException(nameof(arguments),
+                                                      Utilities.DisplayInColor(message: ErrorToMuchArguments(numberOfArguments)));
             }
         }
         #endregion
 
-        #region Proper date format
+        #region Validation: Proper date format
         private static void ValidDateTimeFormat(IList<T> arguments)
         {
             CultureInfo currentCulture = CultureInfo.CurrentUICulture;
@@ -71,32 +76,14 @@ namespace DateRangeConsoleApplication.Validation
             DateTime date = new DateTime();
             foreach (var element in arguments)
             {
-                if (CheckDifferentDateFormats(element, currentCulture, out date) == string.Empty)
+                if (RecogniseDateFormat(element, currentCulture, out date) == string.Empty)
                 {
-                    throw new FormatException(Utilities.DisplayInColor(ErrorWrongInputFormat(element, currentCulture)));
+                    throw new FormatException(Utilities.DisplayInColor(message: ErrorWrongInputFormat(element, currentCulture)));
                 }
             }
-
-            Console.ReadKey();
         }
 
-        private static IList<T> ParseToSpecificCollection(IList<T> arguments)
-        {
-            IList<T> checkedArguments;
-
-            if (arguments.IsReadOnly)
-            {
-                checkedArguments = new T[arguments.Count];
-            }
-            else
-            {
-                checkedArguments = new List<T>();
-            }
-            return checkedArguments;
-        }
-
-        // BUG: This method 1. returns DateTime value (out), 2. returns type of date format, 3. is used like bool return type method
-        private static string CheckDifferentDateFormats(T element, CultureInfo currentCulture, out DateTime date)
+        private static string RecogniseDateFormat(T element, CultureInfo currentCulture, out DateTime date)
         {
             if (DateTime.TryParseExact(element.ToString(), currentCulture.DateTimeFormat.ShortDatePattern,
                 currentCulture, DateTimeStyles.AssumeLocal, out date))
@@ -112,5 +99,21 @@ namespace DateRangeConsoleApplication.Validation
             return string.Empty;
         }
         #endregion
+
+        private static IList<T> ParseToSpecificCollection(IList<T> collection)
+        {
+            IList<T> parsedCollection;
+
+            if (collection.IsReadOnly)
+            {
+                parsedCollection = new T[collection.Count];
+            }
+            else
+            {
+                parsedCollection = new List<T>();
+            }
+
+            return parsedCollection;
+        }
     }
 }

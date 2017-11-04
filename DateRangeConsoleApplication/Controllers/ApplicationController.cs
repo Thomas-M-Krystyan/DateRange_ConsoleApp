@@ -6,7 +6,7 @@ namespace DateRangeConsoleApplication.Controllers
 {
     internal class ApplicationController<T, TN> where TN : IComparable
     {
-        // Methods
+        // Controllers
         internal void Start(IList<T> arguments, TN numberOfArguments)
         {
             var validation = new GeneralValidation<T, TN>();
