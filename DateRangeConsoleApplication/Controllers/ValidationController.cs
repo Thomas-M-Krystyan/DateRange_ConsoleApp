@@ -14,15 +14,19 @@ namespace DateRangeConsoleApplication.Controllers
         // Controllers
         internal bool CheckInputData(IList<T> collection, TN numberOfArguments)
         {
+            // Add new validation method
             ParamsAction validationCriteria = delegate { ValidNumberOfArguments(collection, numberOfArguments); };
-                         validationCriteria += delegate { ValidDateTimeFormat(collection); };
 
-            if (ValidationResult(validationCriteria, new object[] {collection, numberOfArguments}))
-            {
-//                ConversionController<T, TN> conversion = new ConversionController<T, TN>();
-//                IList<T> converteData = conversion.ProcessInputData(collection);
-            }
-            return true;
+            // Add new validation method
+            CultureInfo currentCulture = CultureInfo.CurrentUICulture;
+            validationCriteria += delegate { ValidDateTimeFormat(collection, currentCulture); };
+
+            // Add new validation method
+            ConversionController<T, TN> converter = new ConversionController<T, TN>();
+            IList<DateTime> convertedCollection = converter.ProcessInputData(collection, currentCulture);
+            validationCriteria += delegate { CompareDateTimeValues(convertedCollection); };
+
+            return ValidationResult(validationCriteria, new object[] {});
         }
 
         // Methods
@@ -70,37 +74,50 @@ namespace DateRangeConsoleApplication.Controllers
         #endregion
 
         #region Validation: Proper date format
-        private static void ValidDateTimeFormat(IList<T> collection)
+        private static void ValidDateTimeFormat(IList<T> collection, CultureInfo currentCulture)
         {
-            CultureInfo currentCulture = CultureInfo.CurrentUICulture;
-
-            DateTime date;
             foreach (var element in collection)
             {
-                if (!TryParseDateTime(element, currentCulture, out date))
+                if (!TryParseExactDateTime(element, currentCulture, out DateTime date))
                 {
-                    throw new FormatException(Utilities.DisplayInColor(message: ErrorInputNotConvertible(element)));
+                    throw new FormatException(Utilities.DisplayInColor(message: ErrorWrongInputFormat(element, currentCulture)));
                 }
             }
         }
 
-        private static bool TryParseDateTime(T element, CultureInfo currentCulture, out DateTime date)
+        /// <summary>
+        /// Checks if given input is DateTime type in one of two formats (short or long) and returns parsed input
+        /// </summary>
+        protected static bool TryParseExactDateTime(T element, CultureInfo currentCulture, out DateTime date)
         {
-            return DateTime.TryParse(element.ToString(), currentCulture, DateTimeStyles.AssumeLocal, out date);
+            if (DateTime.TryParseExact(element.ToString(), currentCulture.DateTimeFormat.ShortDatePattern,
+                currentCulture, DateTimeStyles.AssumeLocal, out date))
+            {
+                return true;
+            }
+            if (DateTime.TryParseExact(element.ToString(), currentCulture.DateTimeFormat.LongDatePattern,
+                currentCulture, DateTimeStyles.AssumeLocal, out date))
+            {
+                return true;
+            }
+
+            return false;
         }
         #endregion
 
-        #region Validation: Compare dates arguments
-        private static void CompareDateTimeValues(IList<T> collection)
+        #region Validation: Compare date objects
+        private static void CompareDateTimeValues(IList<DateTime> convertedCollection)
         {
-            int collectionSize = collection.Count - 1;
+            int collectionSize = convertedCollection.Count;
             for (int i = 0; i < collectionSize; i++)
             {
-                if (i != collectionSize)
+                if (i != collectionSize - 1)
                 {
-                    if (collection[i].CompareTo(collection[i + 1]) > 0)
+                    if (convertedCollection[i].CompareTo(convertedCollection[i + 1]) > 0)
                     {
-                        
+                        throw new ArgumentException(Utilities.DisplayInColor(message: ErrorUnexpectedDateOrder(
+                                                                                convertedCollection[i].ToShortDateString(),
+                                                                                convertedCollection[i + 1].ToShortDateString())));
                     }
                 }
             }

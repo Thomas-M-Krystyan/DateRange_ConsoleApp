@@ -8,8 +8,8 @@ namespace DateRangeConsoleApplication.Controllers
         // Controllers
         internal void Start(IList<T> collection, TN numberOfArguments)
         {
-            var validation = new ValidationController<T, TN>();
-            if (validation.CheckInputData(collection, numberOfArguments))
+            ValidationController<T, TN> validator = new ValidationController<T, TN>();
+            if (validator.CheckInputData(collection, numberOfArguments))
             {
                 
             }
