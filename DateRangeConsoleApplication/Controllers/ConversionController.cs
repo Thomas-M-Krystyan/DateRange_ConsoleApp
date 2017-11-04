@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 
 namespace DateRangeConsoleApplication.Controllers
@@ -7,23 +8,26 @@ namespace DateRangeConsoleApplication.Controllers
     internal class ConversionController<T, TN> : ValidationController<T, TN> where T : IComparable
     {
         // Controllers
-        internal IList<T> ProcessInputData(IList<T> collection, CultureInfo currentCulture)
+        internal IList<DateTime> ProcessInputData(IList<T> collection, CultureInfo currentCulture)
         {
             IList<DateTime> convertedDateCollection = ConvertInputsToDateTime(collection, currentCulture);
             
-            return null;
+            foreach (var element in convertedDateCollection) {
+                Console.WriteLine(element);
+            }
+            Console.ReadLine();
+            return convertedDateCollection;
         }
 
         // Methods
         private static IList<DateTime> ConvertInputsToDateTime(IList<T> collection, CultureInfo currentCulture)
         {
-            bool collectionIsReadOnly;
-            IList<DateTime> convertedDateCollection = ParseToSpecificCollection(collection, out collectionIsReadOnly);
+            IList<DateTime> convertedDateCollection = new Collection<DateTime>();
 
             DateTime date;
             for (int i = 0; i < collection.Count; i++)
             {
-                if (collectionIsReadOnly)
+                if (convertedDateCollection.IsReadOnly)
                 {
                     TryParseExactDateTime(collection[i], currentCulture, out date);
                     convertedDateCollection[i] = date;
@@ -36,28 +40,6 @@ namespace DateRangeConsoleApplication.Controllers
             }
 
             return convertedDateCollection;
-        }
-        
-        /// <summary>
-        /// Returns specific instance of generic collection and information
-        /// if IsReadOnly, based on input collection type (e.g. array / list)
-        /// </summary>
-        private static IList<DateTime> ParseToSpecificCollection(IList<T> collection, out bool collectionIsReadOnly)
-        {
-            IList<DateTime> parsedCollection;
-            
-            if (collection.IsReadOnly)
-            {
-                collectionIsReadOnly = true;
-                parsedCollection = new DateTime[collection.Count];
-            }
-            else
-            {
-                collectionIsReadOnly = false;
-                parsedCollection = new List<DateTime>();
-            }
-
-            return parsedCollection;
         }
     }
 }
