@@ -14,13 +14,15 @@ namespace DateRangeConsoleApplication.Controllers
         // Controllers
         internal bool CheckInputData(IList<T> collection, TN numberOfArguments)
         {
-            ParamsAction validationCriteria = delegate { ValidNumberOfArguments(collection, numberOfArguments); };
-                         validationCriteria += delegate { ValidDateTimeFormat(collection); };
+            CultureInfo currentCulture = CultureInfo.CurrentUICulture;
 
-            if (ValidationResult(validationCriteria, new object[] {collection, numberOfArguments}))
+            ParamsAction validationCriteria = delegate { ValidNumberOfArguments(collection, numberOfArguments); };
+                         validationCriteria += delegate { ValidDateTimeFormat(collection, currentCulture); };
+
+            if (ValidationResult(validationCriteria, new object[]{}))
             {
                 ConversionController<T, TN> conversion = new ConversionController<T, TN>();
-                IList<T> converteData = conversion.ProcessInputData(collection);
+                IList<T> converteData = conversion.ProcessInputData(collection, currentCulture);
             }
             return true;
         }
@@ -70,10 +72,8 @@ namespace DateRangeConsoleApplication.Controllers
         #endregion
 
         #region Validation: Proper date format
-        private static void ValidDateTimeFormat(IList<T> collection)
+        private static void ValidDateTimeFormat(IList<T> collection, CultureInfo currentCulture)
         {
-            CultureInfo currentCulture = CultureInfo.CurrentUICulture;
-
             DateTime date;
             foreach (var element in collection)
             {
