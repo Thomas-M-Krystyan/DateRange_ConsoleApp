@@ -14,18 +14,19 @@ namespace DateRangeConsoleApplication.Controllers
         // Controllers
         internal bool CheckInputData(IList<T> collection, TN numberOfArguments)
         {
-            CultureInfo currentCulture = CultureInfo.CurrentUICulture;
-
+            // Add new validation method
             ParamsAction validationCriteria = delegate { ValidNumberOfArguments(collection, numberOfArguments); };
-                         validationCriteria += delegate { ValidDateTimeFormat(collection, currentCulture); };
 
-            if (ValidationResult(validationCriteria, new object[]{}))
-            {
-                ConversionController<T, TN> converter = new ConversionController<T, TN>();
-                IList<DateTime> convertedData = converter.ProcessInputData(collection, currentCulture);
-            }
+            // Add new validation method
+            CultureInfo currentCulture = CultureInfo.CurrentUICulture;
+            validationCriteria += delegate { ValidDateTimeFormat(collection, currentCulture); };
 
-            return true;
+            // Add new validation method
+            ConversionController<T, TN> converter = new ConversionController<T, TN>();
+            IList<DateTime> convertedCollection = converter.ProcessInputData(collection, currentCulture);
+            validationCriteria += delegate { CompareDateTimeValues(convertedCollection); };
+
+            return ValidationResult(validationCriteria, new object[] {});
         }
 
         // Methods
@@ -104,17 +105,19 @@ namespace DateRangeConsoleApplication.Controllers
         }
         #endregion
 
-        #region Validation: Compare dates arguments
-        private static void CompareDateTimeValues(IList<T> collection)
+        #region Validation: Compare date objects
+        private static void CompareDateTimeValues(IList<DateTime> convertedCollection)
         {
-            int collectionSize = collection.Count - 1;
+            int collectionSize = convertedCollection.Count;
             for (int i = 0; i < collectionSize; i++)
             {
-                if (i != collectionSize)
+                if (i != collectionSize - 1)
                 {
-                    if (collection[i].CompareTo(collection[i + 1]) > 0)
+                    if (convertedCollection[i].CompareTo(convertedCollection[i + 1]) > 0)
                     {
-                        
+                        throw new ArgumentException(Utilities.DisplayInColor(message: ErrorUnexpectedDateOrder(
+                                                                                convertedCollection[i].ToShortDateString(),
+                                                                                convertedCollection[i + 1].ToShortDateString())));
                     }
                 }
             }
