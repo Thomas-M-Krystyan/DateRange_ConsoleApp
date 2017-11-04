@@ -12,7 +12,7 @@ namespace DateRangeConsoleApplication.Controllers
         private delegate void ParamsAction(params object[] parameters);
 
         // Controllers
-        internal bool CheckInputData(IList<T> collection, TN numberOfArguments)
+        internal IList<DateTime> CheckInputData(IList<T> collection, TN numberOfArguments)
         {
             // Add new validation method
             ParamsAction validationCriteria = delegate { ValidNumberOfArguments(collection, numberOfArguments); };
@@ -26,7 +26,11 @@ namespace DateRangeConsoleApplication.Controllers
             IList<DateTime> convertedCollection = converter.ProcessInputData(collection, currentCulture);
             validationCriteria += delegate { CompareDateTimeValues(convertedCollection); };
 
-            return ValidationResult(validationCriteria, new object[] {});
+            if (ValidationResult(validationCriteria, new object[] { }))
+            {
+                return convertedCollection;
+            }
+            throw new NullReferenceException(Utilities.DisplayInColor(message: ErrorValidationFailed));
         }
 
         // Methods
