@@ -12,13 +12,12 @@ namespace DateRangeConsoleApplication.Controllers
         private delegate void ParamsAction(params object[] parameters);
 
         // Controllers
-        internal IList<DateTime> CheckInputData(IList<T> collection, TN numberOfArguments)
+        internal IList<DateTime> CheckInputData(IList<T> collection, TN numberOfArguments, CultureInfo currentCulture)
         {
             // Add new validation method
             ParamsAction validationCriteria = delegate { ValidNumberOfArguments(collection, numberOfArguments); };
 
             // Add new validation method
-            CultureInfo currentCulture = CultureInfo.CurrentUICulture;
             validationCriteria += delegate { ValidDateTimeFormat(collection, currentCulture); };
 
             // Add new validation method
