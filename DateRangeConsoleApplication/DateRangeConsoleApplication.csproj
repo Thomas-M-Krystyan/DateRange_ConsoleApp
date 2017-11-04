@@ -43,11 +43,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\ApplicationController.cs" />
+    <Compile Include="Controllers\ConversionController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\Messages\EnglishMessages.cs" />
     <Compile Include="UI\Utilities.cs" />
-    <Compile Include="Validation\GeneralValidation.cs" />
+    <Compile Include="Controllers\ValidationController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -1,4 +1,6 @@
-﻿using DateRangeConsoleApplication.Controllers;
+﻿using System;
+using System.Collections.Generic;
+using DateRangeConsoleApplication.Controllers;
 
 namespace DateRangeConsoleApplication
 {
@@ -11,7 +13,9 @@ namespace DateRangeConsoleApplication
         private static void Main(string[] arguments)
         {
             var application = new ApplicationController<string, int>();
-            application.Start(new string[] {"2017-11-03", "3 listopada 2017"}, NumberOfArguments);
+            application.Start(new List<string>() {"2017-3/03", "3 listopadda 2017"}, NumberOfArguments);
+
+            Console.ReadKey();
         }
     }
 }
