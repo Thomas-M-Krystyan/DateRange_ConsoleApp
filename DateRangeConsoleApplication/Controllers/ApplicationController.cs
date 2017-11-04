@@ -11,7 +11,7 @@ namespace DateRangeConsoleApplication.Controllers
             try
             {
                 ValidationController<T, TN> validator = new ValidationController<T, TN>();
-                validator.CheckInputData(collection, numberOfArguments);
+                IList<DateTime> validationResult = validator.CheckInputData(collection, numberOfArguments);
             }
             catch (Exception exception)
             {
