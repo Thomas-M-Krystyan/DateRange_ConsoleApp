@@ -1,24 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Globalization;
 using DateRangeConsoleApplication.UI;
 using static DateRangeConsoleApplication.UI.Messages.EnglishMessages;
 
 namespace DateRangeConsoleApplication.Validation
 {
-    internal class GeneralValidation<T, TN> where TN : IComparable<TN>
+    internal class GeneralValidation<T, TN> where TN : IComparable
     {
         // Constants
-        private const string ErrorMessageColor = "red";
+        private const string DateTimeIsShort = "short";
+        private const string DateTimeIsLong = "long";
+
+        // Delegates
+        private delegate void ParamsAction(params object[] arguments);
+
+        // Controllers
+        internal bool ProcessInputData(IList<T> arguments, TN numberOfArguments)
+        {
+            ParamsAction validationCriteria = delegate { ValidNumberOfArguments(arguments, numberOfArguments); };
+            validationCriteria += delegate { ValidDateTimeFormat(arguments); };
+
+            return ValidationResult(validationCriteria, new object[]{ arguments, numberOfArguments });
+        }
 
         // Methods
-        internal IList<T> ProcessInputData(IList<T> arguments, TN numberOfArguments)
+        #region Handling exceptions
+        private static bool ValidationResult(ParamsAction validationCriteria, object[] parameters)
         {
-            IList<T> result = new Collection<T>();
-
             try
             {
-                ValidNumberOfArguments(arguments, numberOfArguments);
+                validationCriteria(parameters);
             }
             catch (Exception exception)
             {
@@ -26,35 +38,82 @@ namespace DateRangeConsoleApplication.Validation
                 Console.ReadKey();
             }
 
-            return result;
+            return true;
         }
+        #endregion
 
-        #region Number of arguments
-        private static bool ValidNumberOfArguments(IList<T> arguments, TN numberOfArguments)
+        #region Validation: Number of arguments
+        private static void ValidNumberOfArguments(IList<T> arguments, TN numberOfArguments)
         {
             if (arguments == null)
             {
                 throw new ArgumentNullException(nameof(arguments),
-                                                Utilities.DisplayColor(message: ErrorNullCollection, color: ErrorMessageColor));
+                                                Utilities.DisplayInColor(message: ErrorNullCollection));
             }
             if (arguments.Count == 0)
             {
-                throw new ArgumentException(Utilities.DisplayColor(message: ErrorEmptyCollection, color: ErrorMessageColor),                                     nameof(arguments));
+                throw new ArgumentException(Utilities.DisplayInColor(message: ErrorEmptyCollection),
+                                            nameof(arguments));
             }
             if (arguments.Count.CompareTo(numberOfArguments) < 0)
             {
-                throw new ArgumentException(Utilities.DisplayColor(message: ErrorNotEnoughArguments(numberOfArguments),
-                                                                   color: ErrorMessageColor), nameof(arguments));
+                throw new ArgumentException(Utilities.DisplayInColor(message: ErrorNotEnoughArguments(numberOfArguments)),
+                                            nameof(arguments));
             }
             if (arguments.Count.CompareTo(numberOfArguments) > 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(arguments), 
-                                                      Utilities.DisplayColor(message: ErrorToMuchArguments(numberOfArguments),
-                                                                             color: ErrorMessageColor));
+                throw new ArgumentOutOfRangeException(nameof(arguments),
+                                                      Utilities.DisplayInColor(message: ErrorToMuchArguments(numberOfArguments)));
             }
-
-            return true;
         }
         #endregion
+
+        #region Validation: Proper date format
+        private static void ValidDateTimeFormat(IList<T> arguments)
+        {
+            CultureInfo currentCulture = CultureInfo.CurrentUICulture;
+
+            DateTime date = new DateTime();
+            foreach (var element in arguments)
+            {
+                if (RecogniseDateFormat(element, currentCulture, out date) == string.Empty)
+                {
+                    throw new FormatException(Utilities.DisplayInColor(message: ErrorWrongInputFormat(element, currentCulture)));
+                }
+            }
+        }
+
+        private static string RecogniseDateFormat(T element, CultureInfo currentCulture, out DateTime date)
+        {
+            if (DateTime.TryParseExact(element.ToString(), currentCulture.DateTimeFormat.ShortDatePattern,
+                currentCulture, DateTimeStyles.AssumeLocal, out date))
+            {
+                return DateTimeIsShort;
+            }
+            if (DateTime.TryParseExact(element.ToString(), currentCulture.DateTimeFormat.LongDatePattern,
+                currentCulture, DateTimeStyles.AssumeLocal, out date))
+            {
+                return DateTimeIsLong;
+            }
+
+            return string.Empty;
+        }
+        #endregion
+
+        private static IList<T> ParseToSpecificCollection(IList<T> collection)
+        {
+            IList<T> parsedCollection;
+
+            if (collection.IsReadOnly)
+            {
+                parsedCollection = new T[collection.Count];
+            }
+            else
+            {
+                parsedCollection = new List<T>();
+            }
+
+            return parsedCollection;
+        }
     }
 }

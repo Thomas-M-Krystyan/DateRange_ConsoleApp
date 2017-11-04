@@ -4,13 +4,16 @@ using DateRangeConsoleApplication.Validation;
 
 namespace DateRangeConsoleApplication.Controllers
 {
-    internal class ApplicationController<T, TN> where TN : IComparable<TN>
+    internal class ApplicationController<T, TN> where TN : IComparable
     {
-        // Methods
+        // Controllers
         internal void Start(IList<T> arguments, TN numberOfArguments)
         {
             var validation = new GeneralValidation<T, TN>();
-            validation.ProcessInputData(arguments, numberOfArguments);
+            if (validation.ProcessInputData(arguments, numberOfArguments))
+            {
+                
+            }
         }
     }
 }
