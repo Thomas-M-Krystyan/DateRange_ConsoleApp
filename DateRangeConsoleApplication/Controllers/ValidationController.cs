@@ -21,7 +21,7 @@ namespace DateRangeConsoleApplication.Controllers
 
             if (ValidationResult(validationCriteria, new object[]{}))
             {
-                ConversionController<T> conversion = new ConversionController<T>();
+                ConversionController<T, TN> conversion = new ConversionController<T, TN>();
                 IList<T> converteData = conversion.ProcessInputData(collection, currentCulture);
             }
             return true;
@@ -74,19 +74,32 @@ namespace DateRangeConsoleApplication.Controllers
         #region Validation: Proper date format
         private static void ValidDateTimeFormat(IList<T> collection, CultureInfo currentCulture)
         {
-            DateTime date;
             foreach (var element in collection)
             {
-                if (!TryParseDateTime(element, currentCulture, out date))
+                if (!TryParseExactDateTime(element, currentCulture, out DateTime date))
                 {
-                    throw new FormatException(Utilities.DisplayInColor(message: ErrorInputNotConvertible(element)));
+                    throw new FormatException(Utilities.DisplayInColor(message: ErrorWrongInputFormat(element, currentCulture)));
                 }
             }
         }
 
-        private static bool TryParseDateTime(T element, CultureInfo currentCulture, out DateTime date)
+        /// <summary>
+        /// Checks if given input is DateTime type in one of two formats (short or long) and returns parsed input
+        /// </summary>
+        protected static bool TryParseExactDateTime(T element, CultureInfo currentCulture, out DateTime date)
         {
-            return DateTime.TryParse(element.ToString(), currentCulture, DateTimeStyles.AssumeLocal, out date);
+            if (DateTime.TryParseExact(element.ToString(), currentCulture.DateTimeFormat.ShortDatePattern,
+                currentCulture, DateTimeStyles.AssumeLocal, out date))
+            {
+                return true;
+            }
+            if (DateTime.TryParseExact(element.ToString(), currentCulture.DateTimeFormat.LongDatePattern,
+                currentCulture, DateTimeStyles.AssumeLocal, out date))
+            {
+                return true;
+            }
+
+            return false;
         }
         #endregion
 
