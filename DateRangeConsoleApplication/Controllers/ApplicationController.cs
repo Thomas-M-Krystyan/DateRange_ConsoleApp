@@ -4,7 +4,7 @@ using DateRangeConsoleApplication.Validation;
 
 namespace DateRangeConsoleApplication.Controllers
 {
-    internal class ApplicationController<T, TN> where TN : IComparable<TN>
+    internal class ApplicationController<T, TN> where TN : IComparable
     {
         // Methods
         internal void Start(IList<T> arguments, TN numberOfArguments)

@@ -6,30 +6,30 @@ using static DateRangeConsoleApplication.UI.Messages.EnglishMessages;
 
 namespace DateRangeConsoleApplication.Validation
 {
-    internal class GeneralValidation<T, TN> where TN : IComparable<TN>
+    internal class GeneralValidation<T, TN> where TN : IComparable
     {
         // Constants
         private const string DateTimeIsShort = "short";
         private const string DateTimeIsLong = "long";
 
         // Delegates
-        private Action<IList<T>, TN> _validationAction;
+        private delegate void ParamsAction(params object[] arguments);
 
         // Controllers
         internal bool ProcessInputData(IList<T> arguments, TN numberOfArguments)
         {
-            _validationAction = ValidNumberOfArguments;
-            _validationAction += ValidDateTimeFormat;
+            ParamsAction validationCriteria = delegate { ValidNumberOfArguments(arguments, numberOfArguments); };
+            validationCriteria += delegate { ValidDateTimeFormat(arguments); };
 
-            return ValidationResult(_validationAction, arguments, numberOfArguments);
+            return ValidationResult(validationCriteria, new object[] { arguments, numberOfArguments });
         }
 
         // Methods
-        private static bool ValidationResult(Action<IList<T>, TN> validationCriteria, IList<T> arguments, TN numberOfArguments)
+        private static bool ValidationResult(ParamsAction validationCriteria, object[] parameters)
         {
             try
             {
-                validationCriteria(arguments, numberOfArguments);
+                validationCriteria(parameters);
             }
             catch (Exception exception)
             {
@@ -41,7 +41,7 @@ namespace DateRangeConsoleApplication.Validation
         }
 
         #region Number of arguments
-        private static void ValidNumberOfArguments(IList<T> arguments, TN numberOfArguments)  // BUG: get class field value instead of passing TN as parameter by Action delegate
+        private static void ValidNumberOfArguments(IList<T> arguments, TN numberOfArguments)
         {
             if (arguments == null)
             {
@@ -64,7 +64,7 @@ namespace DateRangeConsoleApplication.Validation
         #endregion
 
         #region Proper date format
-        private static void ValidDateTimeFormat(IList<T> arguments, TN numberOfArguments)  // BUG: Move TN to class field, to reduce non used parameters for Action delegate?
+        private static void ValidDateTimeFormat(IList<T> arguments)
         {
             CultureInfo currentCulture = CultureInfo.CurrentUICulture;
 
