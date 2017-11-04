@@ -46,5 +46,11 @@ namespace DateRangeConsoleApplication.UI.Messages
                    $"Acceptable separators are:\n" +
                    $"\"{cultureDateSeparator}\" (for date) or \"{cultureTimeSeparator}\" (for time)";
         }
+
+        internal static string ErrorUnexpectedDateOrder(object previousDate, object nextDate)
+        {
+            return $"ERROR: The previous date \"{previousDate}\" cannot be later\n" +
+                   $"\tthan the farther one \"{nextDate}\"!";
+        }
     }
 }
