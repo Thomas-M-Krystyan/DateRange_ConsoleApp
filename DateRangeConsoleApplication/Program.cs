@@ -11,7 +11,7 @@ namespace DateRangeConsoleApplication
         private static void Main(string[] arguments)
         {
             var application = new ApplicationController<string, int>();
-            application.Start(new string[] {"a", "b", "c"}, NumberOfArguments);
+            application.Start(new string[] {"2017-11-03", "3 listopada 2017"}, NumberOfArguments);
         }
     }
 }
