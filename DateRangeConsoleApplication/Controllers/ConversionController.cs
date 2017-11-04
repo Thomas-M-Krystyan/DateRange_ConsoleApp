@@ -12,10 +12,6 @@ namespace DateRangeConsoleApplication.Controllers
         {
             IList<DateTime> convertedDateCollection = ConvertInputsToDateTime(collection, currentCulture);
             
-            foreach (var element in convertedDateCollection) {
-                Console.WriteLine(element);
-            }
-            Console.ReadLine();
             return convertedDateCollection;
         }
 
