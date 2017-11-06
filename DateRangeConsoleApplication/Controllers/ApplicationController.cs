@@ -22,7 +22,7 @@ namespace DateRangeConsoleApplication.Controllers
                 DateRangeController ranger = new DateRangeController();
                 ranger.GenerateRange(validationResult, currentCulture);
             }
-            catch (ValidationException exception)
+            catch (Exception exception)
             {
                 Console.WriteLine(exception.Message);
                 Console.ReadKey();
