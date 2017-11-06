@@ -52,6 +52,6 @@ namespace DateRangeConsoleApplication.UI.Messages
                    $"\tthan the farther one \"{nextDate}\"!";
         }
 
-        internal const string ErrorValidationFailed = "ERROR: Validation failed. The program has stopped working!";
+        internal const string ErrorValidationFailed = "\nERROR: Validation failed. The program has stopped working!";
     }
 }
