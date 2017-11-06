@@ -51,5 +51,7 @@ namespace DateRangeConsoleApplication.UI.Messages
             return $"ERROR: The previous date \"{previousDate}\" cannot be later\n" +
                    $"\tthan the farther one \"{nextDate}\"!";
         }
+
+        internal const string ErrorValidationFailed = "\nERROR: Validation failed. The program has stopped working!";
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace DateRangeConsoleApplication.Controllers
 {
@@ -8,10 +9,22 @@ namespace DateRangeConsoleApplication.Controllers
         // Controllers
         internal void Start(IList<T> collection, TN numberOfArguments)
         {
-            ValidationController<T, TN> validator = new ValidationController<T, TN>();
-            if (validator.CheckInputData(collection, numberOfArguments))
+            try
             {
-                
+                CultureInfo currentCulture = CultureInfo.CurrentUICulture;
+
+                // Validation
+                ValidationController<T, TN> validator = new ValidationController<T, TN>();
+                IList<DateTime> validationResult = validator.CheckInputData(collection, numberOfArguments, currentCulture);
+
+                // Generate range
+                DateRangeController ranger = new DateRangeController();
+                ranger.GenerateRange(validationResult, currentCulture);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.Message);
+                Console.ReadKey();
             }
         }
     }

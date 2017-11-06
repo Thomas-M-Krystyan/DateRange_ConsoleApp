@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using DateRangeConsoleApplication.UI;
 using static DateRangeConsoleApplication.UI.Messages.EnglishMessages;
@@ -12,38 +13,40 @@ namespace DateRangeConsoleApplication.Controllers
         private delegate void ParamsAction(params object[] parameters);
 
         // Controllers
-        internal bool CheckInputData(IList<T> collection, TN numberOfArguments)
+        internal IList<DateTime> CheckInputData(IList<T> collection, TN numberOfArguments, CultureInfo currentCulture)
         {
             // Add new validation method
             ParamsAction validationCriteria = delegate { ValidNumberOfArguments(collection, numberOfArguments); };
 
             // Add new validation method
-            CultureInfo currentCulture = CultureInfo.CurrentUICulture;
             validationCriteria += delegate { ValidDateTimeFormat(collection, currentCulture); };
 
             // Add new validation method
             ConversionController<T, TN> converter = new ConversionController<T, TN>();
-            IList<DateTime> convertedCollection = converter.ProcessInputData(collection, currentCulture);
-            validationCriteria += delegate { CompareDateTimeValues(convertedCollection); };
+            IList<DateTime> dateCollection = converter.ProcessInputData(collection, currentCulture);
+            validationCriteria += delegate { CompareDateTimeValues(dateCollection); };
 
-            return ValidationResult(validationCriteria, new object[] {});
+            if (ValidationResult(validationCriteria, new object[] { }))
+            {
+                return dateCollection;
+            }
+            throw new ValidationException(Utilities.DisplayInColor(message: ErrorValidationFailed));
         }
 
         // Methods
-        #region Handling exceptions
+        #region Handling validation exceptions
         private static bool ValidationResult(ParamsAction validationCriteria, object[] parameters)
         {
             try
             {
                 validationCriteria(parameters);
+                return true;
             }
             catch (Exception exception)
             {
                 Console.WriteLine(exception.Message);
-                Console.ReadKey();
+                return false;
             }
-
-            return true;
         }
         #endregion
 
@@ -74,7 +77,7 @@ namespace DateRangeConsoleApplication.Controllers
         #endregion
 
         #region Validation: Proper date format
-        private static void ValidDateTimeFormat(IList<T> collection, CultureInfo currentCulture)
+        private static void ValidDateTimeFormat(IEnumerable<T> collection, CultureInfo currentCulture)
         {
             foreach (var element in collection)
             {
@@ -106,20 +109,17 @@ namespace DateRangeConsoleApplication.Controllers
         #endregion
 
         #region Validation: Compare date objects
-        private static void CompareDateTimeValues(IList<DateTime> convertedCollection)
+        private static void CompareDateTimeValues(IEnumerable<DateTime> dateCollection)
         {
-            int collectionSize = convertedCollection.Count;
-            for (int i = 0; i < collectionSize; i++)
+            DateTime? previousDate = null;
+            foreach (var date in dateCollection)
             {
-                if (i != collectionSize - 1)
+                if (previousDate > date)
                 {
-                    if (convertedCollection[i].CompareTo(convertedCollection[i + 1]) > 0)
-                    {
-                        throw new ArgumentException(Utilities.DisplayInColor(message: ErrorUnexpectedDateOrder(
-                                                                                convertedCollection[i].ToShortDateString(),
-                                                                                convertedCollection[i + 1].ToShortDateString())));
-                    }
+                    throw new ArgumentException(Utilities.DisplayInColor(
+                        message: ErrorUnexpectedDateOrder(previousDate?.ToShortDateString(),date.ToShortDateString())));
                 }
+                previousDate = date;
             }
         }
         #endregion
