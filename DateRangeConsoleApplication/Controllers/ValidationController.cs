@@ -23,31 +23,30 @@ namespace DateRangeConsoleApplication.Controllers
 
             // Add new validation method
             ConversionController<T, TN> converter = new ConversionController<T, TN>();
-            IList<DateTime> convertedDateCollection = converter.ProcessInputData(collection, currentCulture);
-            validationCriteria += delegate { CompareDateTimeValues(convertedDateCollection); };
+            IList<DateTime> dateCollection = converter.ProcessInputData(collection, currentCulture);
+            validationCriteria += delegate { CompareDateTimeValues(dateCollection); };
 
-            if (ValidationResult(validationCriteria, new object[]{}))
+            if (ValidationResult(validationCriteria, new object[] { }))
             {
-                return convertedDateCollection;
+                return dateCollection;
             }
             throw new ValidationException(Utilities.DisplayInColor(message: ErrorValidationFailed));
         }
 
         // Methods
-        #region Handling exceptions
+        #region Handling validation exceptions
         private static bool ValidationResult(ParamsAction validationCriteria, object[] parameters)
         {
             try
             {
                 validationCriteria(parameters);
+                return true;
             }
             catch (Exception exception)
             {
                 Console.WriteLine(exception.Message);
-                Console.ReadKey();
+                return false;
             }
-
-            return true;
         }
         #endregion
 
@@ -78,7 +77,7 @@ namespace DateRangeConsoleApplication.Controllers
         #endregion
 
         #region Validation: Proper date format
-        private static void ValidDateTimeFormat(IList<T> collection, CultureInfo currentCulture)
+        private static void ValidDateTimeFormat(IEnumerable<T> collection, CultureInfo currentCulture)
         {
             foreach (var element in collection)
             {
@@ -110,20 +109,17 @@ namespace DateRangeConsoleApplication.Controllers
         #endregion
 
         #region Validation: Compare date objects
-        private static void CompareDateTimeValues(IList<DateTime> convertedCollection)
+        private static void CompareDateTimeValues(IEnumerable<DateTime> dateCollection)
         {
-            int collectionSize = convertedCollection.Count;
-            for (int i = 0; i < collectionSize; i++)
+            DateTime? previousDate = null;
+            foreach (var date in dateCollection)
             {
-                if (i != collectionSize - 1)
+                if (previousDate > date)
                 {
-                    if (convertedCollection[i].CompareTo(convertedCollection[i + 1]) > 0)
-                    {
-                        throw new ArgumentException(Utilities.DisplayInColor(message: ErrorUnexpectedDateOrder(
-                                                                                convertedCollection[i].ToShortDateString(),
-                                                                                convertedCollection[i + 1].ToShortDateString())));
-                    }
+                    throw new ArgumentException(Utilities.DisplayInColor(
+                        message: ErrorUnexpectedDateOrder(previousDate?.ToShortDateString(),date.ToShortDateString())));
                 }
+                previousDate = date;
             }
         }
         #endregion
