@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using DateRangeConsoleApplication.UI;
 using static DateRangeConsoleApplication.UI.Messages.EnglishMessages;
@@ -25,11 +26,11 @@ namespace DateRangeConsoleApplication.Controllers
             IList<DateTime> convertedDateCollection = converter.ProcessInputData(collection, currentCulture);
             validationCriteria += delegate { CompareDateTimeValues(convertedDateCollection); };
 
-            if (ValidationResult(validationCriteria, new object[] { }))
+            if (ValidationResult(validationCriteria, new object[]{}))
             {
                 return convertedDateCollection;
             }
-            throw new NullReferenceException(Utilities.DisplayInColor(message: ErrorValidationFailed));
+            throw new ValidationException(Utilities.DisplayInColor(message: ErrorValidationFailed));
         }
 
         // Methods
