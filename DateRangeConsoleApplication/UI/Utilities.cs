@@ -5,25 +5,21 @@ namespace DateRangeConsoleApplication.UI
 {
     internal static class Utilities
     {
-        // Constants
-        private const string ErrorMessageColor = "darkred";
-
-        // Methods
-        internal static string DisplayInColor(string message, string color = ErrorMessageColor)
+        internal static string DisplayInColor(string message, string color)
         {
             switch (color.ToLower())
             {
-                case "darkred":
+                case "red":
                     Console.ForegroundColor = ConsoleColor.DarkRed;
                     break;
-                case "darkyellow":
+                case "yellow":
                     Console.ForegroundColor = ConsoleColor.DarkYellow;
                     break;
-                case "darkgreen":
+                case "green":
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
                     break;
                 default:
-                    throw new ArgumentException(DisplayInColor(message: ErrorWrongMessageColor));
+                    throw new ArgumentException(DisplayInColor(message: ErrorWrongMessageColor, color: "red"));
             }
 
             return message;

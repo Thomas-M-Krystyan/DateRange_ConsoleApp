@@ -51,13 +51,13 @@ namespace DateRangeConsoleApplication.Controllers
         {
             if (Equals(inputArray, null))
             {
-                throw new ArgumentNullException(nameof(inputArray),
-                                                Utilities.DisplayInColor(message: ErrorNullCollection));
+                throw new ArgumentNullException(
+                    nameof(inputArray), Utilities.DisplayInColor(message: ErrorNullCollection, color: "red"));
             }
             if (!inputArray.Any())
             {
-                throw new ArgumentException(Utilities.DisplayInColor(message: ErrorEmptyCollection),
-                                            nameof(inputArray));
+                throw new ArgumentException(
+                    Utilities.DisplayInColor(message: ErrorEmptyCollection, color: "red"), nameof(inputArray));
             }
         }
         #endregion
@@ -69,7 +69,8 @@ namespace DateRangeConsoleApplication.Controllers
             {
                 if (!TryParseDateTime(element, currentCulture, out DateTime date))
                 {
-                    throw new FormatException(Utilities.DisplayInColor(message: ErrorWrongInputFormat(element, currentCulture)));
+                    throw new FormatException(
+                        Utilities.DisplayInColor(message: ErrorWrongInputFormat(element, currentCulture), color: "red"));
                 }
             }
         }
@@ -92,8 +93,9 @@ namespace DateRangeConsoleApplication.Controllers
             {
                 if (previousDate > date)
                 {
-                    throw new ArgumentException(Utilities.DisplayInColor(
-                        message: ErrorUnexpectedDateOrder(previousDate?.ToShortDateString(),date.ToShortDateString())));
+                    throw new ArgumentException(
+                        Utilities.DisplayInColor(message: ErrorUnexpectedDateOrder(previousDate?.ToShortDateString(),
+                                                                                   date.ToShortDateString()), color: "red"));
                 }
                 previousDate = date;
             }
