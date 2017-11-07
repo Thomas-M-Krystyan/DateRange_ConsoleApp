@@ -10,31 +10,25 @@ namespace DateRangeConsoleApplication.Controllers
 {
     internal class ValidationController
     {
-        // Delegates
         private delegate void ParamsAction(params object[] parameters);
 
-        // Controllers
-        internal IList<DateTime> CheckInputData(IList<string> collection, CultureInfo currentCulture)
+        internal DateTime[] CheckInputData(string[] inputArray, CultureInfo currentCulture)
         {
-            // Add new validation method
-            ParamsAction validationCriteria = delegate { ValidNumberOfArguments(collection); };
+            ParamsAction validationCriteria = delegate { ValidNumberOfArguments(inputArray); };
 
-            // Add new validation method
-            validationCriteria += delegate { ValidDateTimeFormat(collection, currentCulture); };
+            validationCriteria += delegate { ValidDateTimeFormat(inputArray, currentCulture); };
 
-            // Add new validation method
             ConversionController converter = new ConversionController();
-            IList<DateTime> dateCollection = converter.ProcessInputData(collection, currentCulture);
-            validationCriteria += delegate { CompareDateTimeValues(dateCollection); };
+            DateTime[] dateArray = converter.ProcessInputData(inputArray, currentCulture);
+            validationCriteria += delegate { CompareDateTimeValues(dateArray); };
 
-            if (ValidationResult(validationCriteria, new object[] { collection }))
+            if (ValidationResult(validationCriteria, new object[] { inputArray }))
             {
-                return dateCollection;
+                return dateArray;
             }
             throw new ValidationException(Utilities.DisplayInColor(message: ErrorValidationFailed, color: "red"));
         }
 
-        // Methods
         #region Handling validation exceptions
         private static bool ValidationResult(ParamsAction validationCriteria, object[] parameters)
         {
@@ -53,25 +47,25 @@ namespace DateRangeConsoleApplication.Controllers
         #endregion
 
         #region Validation: Number of arguments
-        private static void ValidNumberOfArguments(IList<string> collection)
+        private static void ValidNumberOfArguments(string[] inputArray)
         {
-            if (Equals(collection, null))
+            if (Equals(inputArray, null))
             {
-                throw new ArgumentNullException(nameof(collection),
+                throw new ArgumentNullException(nameof(inputArray),
                                                 Utilities.DisplayInColor(message: ErrorNullCollection));
             }
-            if (!collection.Any())
+            if (!inputArray.Any())
             {
                 throw new ArgumentException(Utilities.DisplayInColor(message: ErrorEmptyCollection),
-                                            nameof(collection));
+                                            nameof(inputArray));
             }
         }
         #endregion
 
         #region Validation: Proper date format
-        private static void ValidDateTimeFormat(IEnumerable<string> collection, CultureInfo currentCulture)
+        private static void ValidDateTimeFormat(IEnumerable<string> inputArray, CultureInfo currentCulture)
         {
-            foreach (var element in collection)
+            foreach (var element in inputArray)
             {
                 if (!TryParseDateTime(element, currentCulture, out DateTime date))
                 {
@@ -91,10 +85,10 @@ namespace DateRangeConsoleApplication.Controllers
 
         #region Validation: Compare date objects
         //
-        private static void CompareDateTimeValues(IEnumerable<DateTime> dateCollection)
+        private static void CompareDateTimeValues(IEnumerable<DateTime> dateArray)
         {
             DateTime? previousDate = null;
-            foreach (var date in dateCollection)
+            foreach (var date in dateArray)
             {
                 if (previousDate > date)
                 {

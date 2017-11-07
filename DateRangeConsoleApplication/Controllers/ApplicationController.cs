@@ -1,23 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 
 namespace DateRangeConsoleApplication.Controllers
 {
     internal class ApplicationController
     {
-        // Controllers
-        internal void Start(IList<string> collection)
+        internal void Start(string[] inputArray)
         {
             try
             {
                 CultureInfo currentCulture = CultureInfo.CurrentUICulture;
+                currentCulture = new CultureInfo("en-US");
 
-                // Validation
                 ValidationController validator = new ValidationController();
-                IList<DateTime> validationResult = validator.CheckInputData(collection, currentCulture);
+                DateTime[] validationResult = validator.CheckInputData(inputArray, currentCulture);
 
-                // Generate range
                 DateRangeController ranger = new DateRangeController();
                 ranger.AnalyzeData(validationResult, currentCulture);
             }

@@ -1,42 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
-using DateRangeConsoleApplication.Controllers;
 
 namespace DateRangeConsoleApplication.Controllers
 {
     internal class ConversionController
     {
-        // Controllers
-        internal IList<DateTime> ProcessInputData(IList<string> collection, CultureInfo currentCulture)
+        internal DateTime[] ProcessInputData(string[] inputArray, CultureInfo currentCulture)
         {
-            IList<DateTime> convertedDateCollection = ConvertInputsToDateTime(collection, currentCulture);
+            DateTime[] convertedDateArray = ConvertInputsToDateTime(inputArray, currentCulture);
             
-            return convertedDateCollection;
+            return convertedDateArray;
         }
 
-        // Methods
-        private static IList<DateTime> ConvertInputsToDateTime(IList<string> collection, IFormatProvider currentCulture)
+        private static DateTime[] ConvertInputsToDateTime(IReadOnlyList<string> inputArray, IFormatProvider currentCulture)
         {
-            IList<DateTime> convertedDateCollection = new Collection<DateTime>();
+            DateTime[] convertedDateArray = new DateTime[inputArray.Count];
 
             DateTime date;
-            for (int i = 0; i < collection.Count; i++)
+            for (int i = 0; i < inputArray.Count; i++)
             {
-                ValidationController.TryParseDateTime(collection[i], currentCulture, out date);
-
-                if (convertedDateCollection.IsReadOnly)
-                {
-                    convertedDateCollection[i] = date;
-                }
-                else
-                {
-                    convertedDateCollection.Add(date);
-                }
+                ValidationController.TryParseDateTime(inputArray[i], currentCulture, out date);
+                convertedDateArray[i] = date;
             }
 
-            return convertedDateCollection;
+            return convertedDateArray;
         }
     }
 }
