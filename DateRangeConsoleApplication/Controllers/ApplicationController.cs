@@ -16,7 +16,8 @@ namespace DateRangeConsoleApplication.Controllers
                 DateTime[] validationResult = validator.CheckInputData(inputArray, currentCulture);
 
                 DateRangeController ranger = new DateRangeController();
-                ranger.AnalyzeData(validationResult, currentCulture);
+                string result = ranger.AnalyzeData(validationResult, currentCulture);
+                DisplayController.Display(result);
             }
             catch (Exception exception)
             {

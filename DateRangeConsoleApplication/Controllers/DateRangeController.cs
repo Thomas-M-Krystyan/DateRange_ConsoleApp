@@ -16,11 +16,8 @@ namespace DateRangeConsoleApplication.Controllers
         {
             IEnumerable<Func<DateTime, DateTime, Similarity>> checkingFuncCriteriaList = PrepareCheckingFuncCriteriaList();
             Similarity checkingResult = CheckDateSimilarity(dateArray, checkingFuncCriteriaList);
-            string rangingResult = GenerateRange(dateArray, checkingResult, currentCulture);
-            Console.WriteLine(rangingResult);
-            Console.ReadKey();
 
-            return null;
+            return GenerateRange(dateArray, checkingResult, currentCulture);
         }
 
         /// <summary> 
