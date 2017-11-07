@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using DateRangeConsoleApplication.Controllers;
 
 namespace DateRangeConsoleApplication.Controllers
 {
-    internal class ConversionController<T, TN> : ValidationController<T, TN> where T : IComparable
+    internal class ConversionController
     {
         // Controllers
-        internal IList<DateTime> ProcessInputData(IList<T> collection, CultureInfo currentCulture)
+        internal IList<DateTime> ProcessInputData(IList<string> collection, CultureInfo currentCulture)
         {
             IList<DateTime> convertedDateCollection = ConvertInputsToDateTime(collection, currentCulture);
             
@@ -16,14 +17,14 @@ namespace DateRangeConsoleApplication.Controllers
         }
 
         // Methods
-        private static IList<DateTime> ConvertInputsToDateTime(IList<T> collection, IFormatProvider currentCulture)
+        private static IList<DateTime> ConvertInputsToDateTime(IList<string> collection, IFormatProvider currentCulture)
         {
             IList<DateTime> convertedDateCollection = new Collection<DateTime>();
 
             DateTime date;
             for (int i = 0; i < collection.Count; i++)
             {
-                TryParseDateTime(collection[i], currentCulture, out date);
+                ValidationController.TryParseDateTime(collection[i], currentCulture, out date);
 
                 if (convertedDateCollection.IsReadOnly)
                 {

@@ -8,17 +8,6 @@ namespace DateRangeConsoleApplication.UI.Messages
         // Error Messages
         internal const string ErrorNullCollection = "ERROR: There is no collection!";
         internal const string ErrorEmptyCollection = "ERROR: Collection cannot be empty!";
-        
-        internal static string ErrorNotEnoughArguments(object numberOfArguments)
-        {
-            return $"ERROR: Collection has less than {numberOfArguments} arguments";
-        }
-
-        internal static string ErrorToMuchArguments(object numberOfArguments)
-        {
-            return $"ERROR: Collection has more than {numberOfArguments} arguments";
-        }
-
         internal const string ErrorWrongMessageColor = "ERROR: There is no such message color!";
 
         internal static string ErrorWrongInputFormat(object inputValue, CultureInfo currentCulture)

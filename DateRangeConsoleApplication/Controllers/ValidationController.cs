@@ -8,22 +8,22 @@ using static DateRangeConsoleApplication.UI.Messages.EnglishMessages;
 
 namespace DateRangeConsoleApplication.Controllers
 {
-    internal class ValidationController<T, TN> where T : IComparable
+    internal class ValidationController
     {
         // Delegates
         private delegate void ParamsAction(params object[] parameters);
 
         // Controllers
-        internal IList<DateTime> CheckInputData(IList<T> collection, TN numberOfArguments, CultureInfo currentCulture)
+        internal IList<DateTime> CheckInputData(IList<string> collection, CultureInfo currentCulture)
         {
             // Add new validation method
-            ParamsAction validationCriteria = delegate { ValidNumberOfArguments(collection, numberOfArguments); };
+            ParamsAction validationCriteria = delegate { ValidNumberOfArguments(collection); };
 
             // Add new validation method
             validationCriteria += delegate { ValidDateTimeFormat(collection, currentCulture); };
 
             // Add new validation method
-            ConversionController<T, TN> converter = new ConversionController<T, TN>();
+            ConversionController converter = new ConversionController();
             IList<DateTime> dateCollection = converter.ProcessInputData(collection, currentCulture);
             validationCriteria += delegate { CompareDateTimeValues(dateCollection); };
 
@@ -31,7 +31,7 @@ namespace DateRangeConsoleApplication.Controllers
             {
                 return dateCollection;
             }
-            throw new ValidationException(Utilities.DisplayInColor(message: ErrorValidationFailed, color:"red"));
+            throw new ValidationException(Utilities.DisplayInColor(message: ErrorValidationFailed, color: "red"));
         }
 
         // Methods
@@ -53,7 +53,7 @@ namespace DateRangeConsoleApplication.Controllers
         #endregion
 
         #region Validation: Number of arguments
-        private static void ValidNumberOfArguments(IList<T> collection, TN numberOfArguments)
+        private static void ValidNumberOfArguments(IList<string> collection)
         {
             if (Equals(collection, null))
             {
@@ -65,21 +65,11 @@ namespace DateRangeConsoleApplication.Controllers
                 throw new ArgumentException(Utilities.DisplayInColor(message: ErrorEmptyCollection),
                                             nameof(collection));
             }
-            if (collection.Count.CompareTo(numberOfArguments) < 0)
-            {
-                throw new ArgumentException(Utilities.DisplayInColor(message: ErrorNotEnoughArguments(numberOfArguments)),
-                                            nameof(collection));
-            }
-            if (collection.Count.CompareTo(numberOfArguments) > 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(collection),
-                                                      Utilities.DisplayInColor(message: ErrorToMuchArguments(numberOfArguments)));
-            }
         }
         #endregion
 
         #region Validation: Proper date format
-        private static void ValidDateTimeFormat(IEnumerable<T> collection, CultureInfo currentCulture)
+        private static void ValidDateTimeFormat(IEnumerable<string> collection, CultureInfo currentCulture)
         {
             foreach (var element in collection)
             {
@@ -93,9 +83,9 @@ namespace DateRangeConsoleApplication.Controllers
         /// <summary>
         /// Checks if given input is DateTime type in one of two formats (short or long) and returns parsed input
         /// </summary>
-        protected static bool TryParseDateTime(T element, IFormatProvider currentCulture, out DateTime date)
+        public static bool TryParseDateTime(string element, IFormatProvider currentCulture, out DateTime date)
         {
-            return DateTime.TryParse(element.ToString(), currentCulture, DateTimeStyles.None, out date);
+            return DateTime.TryParse(element, currentCulture, DateTimeStyles.None, out date);
         }
         #endregion
 

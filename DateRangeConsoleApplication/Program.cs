@@ -4,14 +4,13 @@ namespace DateRangeConsoleApplication
 {
     internal static class Program
     {
-        // Constants
-        private const int NumberOfArguments = 2;  // Valid number of arguments
+        static string[] _args = {"2017-11-04", "2017-12-05"};
 
         // Methods
         private static void Main(string[] arguments)
         {
-            var application = new ApplicationController<string, int>();
-            application.Start(new string[] { "2017-11-04", "2017-12-05" }, NumberOfArguments);
+            var application = new ApplicationController();
+            application.Start(_args);
         }
     }
 }

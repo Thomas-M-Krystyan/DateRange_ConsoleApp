@@ -4,18 +4,18 @@ using System.Globalization;
 
 namespace DateRangeConsoleApplication.Controllers
 {
-    internal class ApplicationController<T, TN> where T : IComparable
+    internal class ApplicationController
     {
         // Controllers
-        internal void Start(IList<T> collection, TN numberOfArguments)
+        internal void Start(IList<string> collection)
         {
             try
             {
                 CultureInfo currentCulture = CultureInfo.CurrentUICulture;
 
                 // Validation
-                ValidationController<T, TN> validator = new ValidationController<T, TN>();
-                IList<DateTime> validationResult = validator.CheckInputData(collection, numberOfArguments, currentCulture);
+                ValidationController validator = new ValidationController();
+                IList<DateTime> validationResult = validator.CheckInputData(collection, currentCulture);
 
                 // Generate range
                 DateRangeController ranger = new DateRangeController();
