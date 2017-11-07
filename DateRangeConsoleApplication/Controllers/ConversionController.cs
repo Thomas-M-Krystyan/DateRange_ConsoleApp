@@ -1,41 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 
 namespace DateRangeConsoleApplication.Controllers
 {
-    internal class ConversionController<T, TN> : ValidationController<T, TN> where T : IComparable
+    internal class ConversionController
     {
-        // Controllers
-        internal IList<DateTime> ProcessInputData(IList<T> collection, CultureInfo currentCulture)
+        internal DateTime[] ProcessInputArray(string[] inputArray, CultureInfo currentCulture)
         {
-            IList<DateTime> convertedDateCollection = ConvertInputsToDateTime(collection, currentCulture);
+            DateTime[] convertedDateArray = ConvertStringsToDateTime(inputArray, currentCulture);
             
-            return convertedDateCollection;
+            return convertedDateArray;
         }
 
-        // Methods
-        private static IList<DateTime> ConvertInputsToDateTime(IList<T> collection, IFormatProvider currentCulture)
+        private static DateTime[] ConvertStringsToDateTime(IReadOnlyList<string> inputArray, IFormatProvider currentCulture)
         {
-            IList<DateTime> convertedDateCollection = new Collection<DateTime>();
+            DateTime[] convertedDateArray = new DateTime[inputArray.Count];
 
             DateTime date;
-            for (int i = 0; i < collection.Count; i++)
+            for (int i = 0; i < inputArray.Count; i++)
             {
-                TryParseDateTime(collection[i], currentCulture, out date);
-
-                if (convertedDateCollection.IsReadOnly)
-                {
-                    convertedDateCollection[i] = date;
-                }
-                else
-                {
-                    convertedDateCollection.Add(date);
-                }
+                ValidationController.TryParseToDate(inputArray[i], currentCulture, out date);
+                convertedDateArray[i] = date;
             }
 
-            return convertedDateCollection;
+            return convertedDateArray;
         }
     }
 }

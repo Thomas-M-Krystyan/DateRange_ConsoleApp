@@ -3,40 +3,34 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
-using DateRangeConsoleApplication.UI;
+using static DateRangeConsoleApplication.Controllers.DisplayController;
 using static DateRangeConsoleApplication.UI.Messages.EnglishMessages;
 
 namespace DateRangeConsoleApplication.Controllers
 {
-    internal class ValidationController<T, TN> where T : IComparable
+    internal class ValidationController
     {
-        // Delegates
         private delegate void ParamsAction(params object[] parameters);
 
-        // Controllers
-        internal IList<DateTime> CheckInputData(IList<T> collection, TN numberOfArguments, CultureInfo currentCulture)
+        internal DateTime[] CheckInputArray(string[] inputArray, CultureInfo currentCulture)
         {
-            // Add new validation method
-            ParamsAction validationCriteria = delegate { ValidNumberOfArguments(collection, numberOfArguments); };
+            ParamsAction validationCriteria = delegate { IsCollectionValid(inputArray); };
 
-            // Add new validation method
-            validationCriteria += delegate { ValidDateTimeFormat(collection, currentCulture); };
+            validationCriteria += delegate { IsInputValid(inputArray, currentCulture); };
 
-            // Add new validation method
-            ConversionController<T, TN> converter = new ConversionController<T, TN>();
-            IList<DateTime> dateCollection = converter.ProcessInputData(collection, currentCulture);
-            validationCriteria += delegate { CompareDateTimeValues(dateCollection); };
+            ConversionController converter = new ConversionController();
+            DateTime[] dateArray = converter.ProcessInputArray(inputArray, currentCulture);
+            validationCriteria += delegate { IsDatesOrderAscending(dateArray); };
 
-            if (ValidationResult(validationCriteria, new object[] { collection }))
+            if (IsValidationSucceed(validationCriteria, new object[] { inputArray }))
             {
-                return dateCollection;
+                return dateArray;
             }
-            throw new ValidationException(Utilities.DisplayInColor(message: ErrorValidationFailed, color:"red"));
+            throw new ValidationException(ApplyColorToMessage(ErrorValidationFailed, Color.DarkRed));
         }
 
-        // Methods
         #region Handling validation exceptions
-        private static bool ValidationResult(ParamsAction validationCriteria, object[] parameters)
+        private static bool IsValidationSucceed(ParamsAction validationCriteria, object[] parameters)
         {
             try
             {
@@ -45,74 +39,69 @@ namespace DateRangeConsoleApplication.Controllers
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception.Message);
+                Display(exception.Message);
                 Console.ReadKey();
                 return false;
             }
         }
         #endregion
 
-        #region Validation: Number of arguments
-        private static void ValidNumberOfArguments(IList<T> collection, TN numberOfArguments)
+        #region Validation: Proper collection
+        private static bool IsCollectionValid(string[] inputArray)
         {
-            if (Equals(collection, null))
+            bool collectionNotExist = Equals(inputArray, null);
+            if (collectionNotExist)
             {
-                throw new ArgumentNullException(nameof(collection),
-                                                Utilities.DisplayInColor(message: ErrorNullCollection));
+                throw new ArgumentNullException(nameof(inputArray), ApplyColorToMessage(ErrorNullCollection, Color.DarkRed));
             }
-            if (!collection.Any())
+            bool collectionIsEmpty = !inputArray.Any();
+            if (collectionIsEmpty)
             {
-                throw new ArgumentException(Utilities.DisplayInColor(message: ErrorEmptyCollection),
-                                            nameof(collection));
+                throw new ArgumentException(ApplyColorToMessage(ErrorEmptyCollection, Color.DarkRed), nameof(inputArray));
             }
-            if (collection.Count.CompareTo(numberOfArguments) < 0)
-            {
-                throw new ArgumentException(Utilities.DisplayInColor(message: ErrorNotEnoughArguments(numberOfArguments)),
-                                            nameof(collection));
-            }
-            if (collection.Count.CompareTo(numberOfArguments) > 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(collection),
-                                                      Utilities.DisplayInColor(message: ErrorToMuchArguments(numberOfArguments)));
-            }
+
+            return true;
         }
         #endregion
 
         #region Validation: Proper date format
-        private static void ValidDateTimeFormat(IEnumerable<T> collection, CultureInfo currentCulture)
+        private static bool IsInputValid(IEnumerable<string> inputArray, CultureInfo currentCulture)
         {
-            foreach (var element in collection)
+            foreach (var element in inputArray)
             {
-                if (!TryParseDateTime(element, currentCulture, out DateTime date))
+                bool inputCannotBeParsedToDate = !TryParseToDate(element, currentCulture, out DateTime date);
+                if (inputCannotBeParsedToDate)
                 {
-                    throw new FormatException(Utilities.DisplayInColor(message: ErrorWrongInputFormat(element, currentCulture)));
+                    throw new FormatException(ApplyColorToMessage(ErrorWrongInputFormat(element, currentCulture), Color.DarkRed));
                 }
             }
+
+            return true;
         }
 
-        /// <summary>
-        /// Checks if given input is DateTime type in one of two formats (short or long) and returns parsed input
-        /// </summary>
-        protected static bool TryParseDateTime(T element, IFormatProvider currentCulture, out DateTime date)
+        internal static bool TryParseToDate(string element, IFormatProvider currentCulture, out DateTime date)
         {
-            return DateTime.TryParse(element.ToString(), currentCulture, DateTimeStyles.None, out date);
+            return DateTime.TryParse(element, currentCulture, DateTimeStyles.AssumeLocal, out date);
         }
         #endregion
 
         #region Validation: Compare date objects
         //
-        private static void CompareDateTimeValues(IEnumerable<DateTime> dateCollection)
+        private static bool IsDatesOrderAscending(IEnumerable<DateTime> dateArray)
         {
             DateTime? previousDate = null;
-            foreach (var date in dateCollection)
+            foreach (var date in dateArray)
             {
-                if (previousDate > date)
+                bool previousDateIsLaterThanNextDate = previousDate > date;
+                if (previousDateIsLaterThanNextDate)
                 {
-                    throw new ArgumentException(Utilities.DisplayInColor(
-                        message: ErrorUnexpectedDateOrder(previousDate?.ToShortDateString(),date.ToShortDateString())));
+                    throw new ArgumentException(ApplyColorToMessage(ErrorUnexpectedDateOrder(previousDate?.ToShortDateString(),
+                                                                                    date.ToShortDateString()), Color.DarkRed));
                 }
                 previousDate = date;
             }
+
+            return true;
         }
         #endregion
     }
