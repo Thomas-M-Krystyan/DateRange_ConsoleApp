@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using System.Linq;
 using DateRangeConsoleApplication.UI;
 using static DateRangeConsoleApplication.UI.Messages.EnglishMessages;
 
@@ -26,11 +27,11 @@ namespace DateRangeConsoleApplication.Controllers
             IList<DateTime> dateCollection = converter.ProcessInputData(collection, currentCulture);
             validationCriteria += delegate { CompareDateTimeValues(dateCollection); };
 
-            if (ValidationResult(validationCriteria, new object[] { }))
+            if (ValidationResult(validationCriteria, new object[] { collection }))
             {
                 return dateCollection;
             }
-            throw new ValidationException(Utilities.DisplayInColor(message: ErrorValidationFailed));
+            throw new ValidationException(Utilities.DisplayInColor(message: ErrorValidationFailed, color:"red"));
         }
 
         // Methods
@@ -45,6 +46,7 @@ namespace DateRangeConsoleApplication.Controllers
             catch (Exception exception)
             {
                 Console.WriteLine(exception.Message);
+                Console.ReadKey();
                 return false;
             }
         }
@@ -53,12 +55,12 @@ namespace DateRangeConsoleApplication.Controllers
         #region Validation: Number of arguments
         private static void ValidNumberOfArguments(IList<T> collection, TN numberOfArguments)
         {
-            if (collection == null)
+            if (Equals(collection, null))
             {
                 throw new ArgumentNullException(nameof(collection),
                                                 Utilities.DisplayInColor(message: ErrorNullCollection));
             }
-            if (collection.Count == 0)
+            if (!collection.Any())
             {
                 throw new ArgumentException(Utilities.DisplayInColor(message: ErrorEmptyCollection),
                                             nameof(collection));
@@ -81,7 +83,7 @@ namespace DateRangeConsoleApplication.Controllers
         {
             foreach (var element in collection)
             {
-                if (!TryParseExactDateTime(element, currentCulture, out DateTime date))
+                if (!TryParseDateTime(element, currentCulture, out DateTime date))
                 {
                     throw new FormatException(Utilities.DisplayInColor(message: ErrorWrongInputFormat(element, currentCulture)));
                 }
@@ -91,24 +93,14 @@ namespace DateRangeConsoleApplication.Controllers
         /// <summary>
         /// Checks if given input is DateTime type in one of two formats (short or long) and returns parsed input
         /// </summary>
-        protected static bool TryParseExactDateTime(T element, CultureInfo currentCulture, out DateTime date)
+        protected static bool TryParseDateTime(T element, IFormatProvider currentCulture, out DateTime date)
         {
-            if (DateTime.TryParseExact(element.ToString(), currentCulture.DateTimeFormat.ShortDatePattern,
-                currentCulture, DateTimeStyles.AssumeLocal, out date))
-            {
-                return true;
-            }
-            if (DateTime.TryParseExact(element.ToString(), currentCulture.DateTimeFormat.LongDatePattern,
-                currentCulture, DateTimeStyles.AssumeLocal, out date))
-            {
-                return true;
-            }
-
-            return false;
+            return DateTime.TryParse(element.ToString(), currentCulture, DateTimeStyles.None, out date);
         }
         #endregion
 
         #region Validation: Compare date objects
+        //
         private static void CompareDateTimeValues(IEnumerable<DateTime> dateCollection)
         {
             DateTime? previousDate = null;

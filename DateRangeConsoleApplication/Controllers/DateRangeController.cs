@@ -12,11 +12,12 @@ namespace DateRangeConsoleApplication.Controllers
         private enum Similarity { NoSimilarity, SameYear, SameMonth, SameDay }
 
         // Controllers
-        internal string GenerateRange(IList<DateTime> dateCollection, CultureInfo currentCulture)
+        internal string AnalyzeData(IList<DateTime> dateCollection, CultureInfo currentCulture)
         {
-            var checkingFuncCriteriaList = PrepareCheckingFuncCriteriaList();
-            Console.WriteLine(CheckDateSimilarity(dateCollection, checkingFuncCriteriaList));
-
+            IEnumerable<Func<DateTime, DateTime, Similarity>> checkingFuncCriteriaList = PrepareCheckingFuncCriteriaList();
+            Similarity checkingResult = CheckDateSimilarity(dateCollection, checkingFuncCriteriaList);
+            string rangingResult = GenerateRange(dateCollection, checkingResult, currentCulture);
+            Console.WriteLine(rangingResult);
             Console.ReadKey();
 
             return null;
@@ -43,7 +44,7 @@ namespace DateRangeConsoleApplication.Controllers
         private static Similarity CheckDateSimilarity(ICollection<DateTime> dateCollection,
                                                       IEnumerable<Func<DateTime, DateTime, Similarity>> checkingFuncCriteriaList)
         {
-            if (dateCollection.Count == 1)
+            if (!dateCollection.Any())
             {
                 return Similarity.SameDay;
             }
@@ -54,6 +55,7 @@ namespace DateRangeConsoleApplication.Controllers
             {
                 DateTime? previousDate = null;
                 Similarity currentComparisonResult;
+                //
                 foreach (var date in dateCollection)
                 {
                     if (previousDate != null)
@@ -63,8 +65,11 @@ namespace DateRangeConsoleApplication.Controllers
                     }
                     previousDate = date;
                 }
+                //
                 currentComparisonResult = checkingResultsSet.Count == 1 ? checkingResultsSet.First()
                                                                         : Similarity.NoSimilarity;
+
+                //
                 if (currentComparisonResult != Similarity.NoSimilarity)
                 {
                     finalComparisonResult = currentComparisonResult;
@@ -73,10 +78,49 @@ namespace DateRangeConsoleApplication.Controllers
                 {
                     return finalComparisonResult;
                 }
+                //
                 checkingResultsSet.Clear();
             }
 
             return finalComparisonResult;
+        }
+
+        private static string GenerateRange(IList<DateTime> dateCollection, Similarity checkingResult, CultureInfo currentCulture)
+        {
+            const string hyphen = "\u2014";
+            const string formatStyle = "d";
+
+            DateTime firstDate = dateCollection.First();
+            DateTime lastDate = dateCollection.Last();
+            string dateSeparator = currentCulture.DateTimeFormat.DateSeparator;
+
+            switch (checkingResult)
+            {
+                // 01.05.2017
+                case Similarity.SameDay:
+                    return $"{firstDate.ToString(formatStyle, currentCulture)}";
+                // 01-05.01.2017
+                case Similarity.SameMonth:
+                    return $"{GetCultureDay(firstDate, currentCulture)}{hyphen}" + $"{lastDate.ToString(formatStyle, currentCulture)}";
+                // 01.01 – 05.02.2017
+                case Similarity.SameYear:
+                    string dateStr = firstDate.ToString(formatStyle, currentCulture).Replace(firstDate.ToString("yyyy",
+                                     currentCulture), string.Empty).Trim(Convert.ToChar(dateSeparator));
+                    return $"{dateStr} {hyphen} " + $"{lastDate.ToString(formatStyle, currentCulture)}";
+                // 01.01.2016 – 05.01.2017
+                case Similarity.NoSimilarity:
+                    return $"{firstDate.ToString(formatStyle, currentCulture)} {hyphen} {lastDate.ToString(formatStyle, currentCulture)}";
+                default:
+                    throw new ArgumentOutOfRangeException($"There is no such format option!");
+            }
+        }
+
+        private static string GetCultureDay(DateTime date, CultureInfo currentCulture)
+        {
+            string shortDateFormat = currentCulture.DateTimeFormat.ShortDatePattern;
+            int letterCount = shortDateFormat.Count(letter => letter == 'd');
+
+            return letterCount == 1 ? date.Day.ToString() : date.ToString("dd", currentCulture);
         }
     }
 }
