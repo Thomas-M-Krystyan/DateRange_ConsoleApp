@@ -25,6 +25,7 @@ namespace DateRangeConsoleApplication.UI.Messages
         {
             DateTime date = DateTime.Now;
 
+            Type dateType = typeof(DateTime);
             string cultureDateSeparator = currentCulture.DateTimeFormat.DateSeparator;
             string cultureTimeSeparator = currentCulture.DateTimeFormat.TimeSeparator;
             string localCultureName = currentCulture.DisplayName;
@@ -32,17 +33,18 @@ namespace DateRangeConsoleApplication.UI.Messages
             string exampleShortDateFormat = date.ToString("d", currentCulture);
             string exampleLongDateFormat = date.ToString("D", currentCulture);
 
-            return $"ERROR: Input \"{inputValue}\" cannot be converted to local DateTime format\n" +
-                   $"(possible: invalid data type, misspellings, illegal local datetime separators,\n" +
-                   $"or given date does not exist (e.g. wrong day, month, or year is out of range))!\n\n" +
+            return $"ERROR: Your input \"{inputValue}\"\n" +
+                   $"cannot be converted to known date format or style of {dateType} type!\n" +
+                   $"(Possible: invalid input type, misspellings, illegal datetime separators,\n" +
+                   $"or given date does not exist - e.g. day, month, or year are out of range)\n\n" +
 
                    $"Your system language is:\n" +
                    $"\"{localCultureName} / {englishCultureName}\"\n\n" +
 
-                   $"Acceptable date formats are:\n" +
+                   $"Suggested date formats are:\n" +
                    $"\"{exampleShortDateFormat}\" (short) or \"{exampleLongDateFormat}\" (long)\n\n" +
                    
-                   $"Acceptable separators are:\n" +
+                   $"Suggested separators are:\n" +
                    $"\"{cultureDateSeparator}\" (for date) or \"{cultureTimeSeparator}\" (for time)";
         }
 
