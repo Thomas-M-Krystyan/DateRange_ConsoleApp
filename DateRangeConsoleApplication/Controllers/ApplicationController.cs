@@ -19,7 +19,7 @@ namespace DateRangeConsoleApplication.Controllers
 
                 // Generate range
                 DateRangeController ranger = new DateRangeController();
-                ranger.GenerateRange(validationResult, currentCulture);
+                ranger.AnalyzeData(validationResult, currentCulture);
             }
             catch (Exception exception)
             {
