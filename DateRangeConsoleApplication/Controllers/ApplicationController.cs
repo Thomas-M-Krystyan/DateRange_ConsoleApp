@@ -20,7 +20,7 @@ namespace DateRangeConsoleApplication.Controllers
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception.Message);
+                DisplayController.Display(exception.Message);
                 Console.ReadKey();
             }
         }

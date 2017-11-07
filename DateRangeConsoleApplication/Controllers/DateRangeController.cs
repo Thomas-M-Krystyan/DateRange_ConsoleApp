@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
-using DateRangeConsoleApplication.UI;
 using static DateRangeConsoleApplication.UI.Messages.EnglishMessages;
+using static DateRangeConsoleApplication.Controllers.DisplayController;
 
 namespace DateRangeConsoleApplication.Controllers
 {
@@ -110,7 +110,7 @@ namespace DateRangeConsoleApplication.Controllers
                 case Similarity.NoSimilarity:
                     return $"{firstDate.ToString(formatStyle, currentCulture)} {hyphen} {lastDate.ToString(formatStyle, currentCulture)}";
                 default:
-                    throw new ArgumentOutOfRangeException(Utilities.DisplayInColor(ErrorInvalidFormatStrategy, "red"));
+                    throw new ArgumentOutOfRangeException(ApplyColorToMessage(ErrorInvalidFormatStrategy, Color.DarkRed));
             }
         }
 

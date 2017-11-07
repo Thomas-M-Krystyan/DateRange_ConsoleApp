@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
-using DateRangeConsoleApplication.UI;
+using static DateRangeConsoleApplication.Controllers.DisplayController;
 using static DateRangeConsoleApplication.UI.Messages.EnglishMessages;
 
 namespace DateRangeConsoleApplication.Controllers
@@ -26,7 +26,7 @@ namespace DateRangeConsoleApplication.Controllers
             {
                 return dateArray;
             }
-            throw new ValidationException(Utilities.DisplayInColor(message: ErrorValidationFailed, color: "red"));
+            throw new ValidationException(ApplyColorToMessage(ErrorValidationFailed, Color.DarkRed));
         }
 
         #region Handling validation exceptions
@@ -39,7 +39,7 @@ namespace DateRangeConsoleApplication.Controllers
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception.Message);
+                Display(exception.Message);
                 Console.ReadKey();
                 return false;
             }
@@ -51,13 +51,11 @@ namespace DateRangeConsoleApplication.Controllers
         {
             if (Equals(inputArray, null))
             {
-                throw new ArgumentNullException(
-                    nameof(inputArray), Utilities.DisplayInColor(message: ErrorNullCollection, color: "red"));
+                throw new ArgumentNullException(nameof(inputArray), ApplyColorToMessage(ErrorNullCollection, Color.DarkRed));
             }
             if (!inputArray.Any())
             {
-                throw new ArgumentException(
-                    Utilities.DisplayInColor(message: ErrorEmptyCollection, color: "red"), nameof(inputArray));
+                throw new ArgumentException(ApplyColorToMessage(ErrorEmptyCollection, Color.DarkRed), nameof(inputArray));
             }
         }
         #endregion
@@ -70,7 +68,7 @@ namespace DateRangeConsoleApplication.Controllers
                 if (!TryParseDateTime(element, currentCulture, out DateTime date))
                 {
                     throw new FormatException(
-                        Utilities.DisplayInColor(message: ErrorWrongInputFormat(element, currentCulture), color: "red"));
+                        ApplyColorToMessage(ErrorWrongInputFormat(element, currentCulture), Color.DarkRed));
                 }
             }
         }
@@ -93,9 +91,8 @@ namespace DateRangeConsoleApplication.Controllers
             {
                 if (previousDate > date)
                 {
-                    throw new ArgumentException(
-                        Utilities.DisplayInColor(message: ErrorUnexpectedDateOrder(previousDate?.ToShortDateString(),
-                                                                                   date.ToShortDateString()), color: "red"));
+                    throw new ArgumentException(ApplyColorToMessage(ErrorUnexpectedDateOrder(previousDate?.ToShortDateString(),
+                                                                                    date.ToShortDateString()), Color.DarkRed));
                 }
                 previousDate = date;
             }

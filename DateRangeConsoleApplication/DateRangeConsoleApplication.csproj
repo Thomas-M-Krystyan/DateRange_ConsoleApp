@@ -46,11 +46,11 @@
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\ConversionController.cs" />
     <Compile Include="Controllers\DateRangeController.cs" />
+    <Compile Include="Controllers\DisplayController.cs" />
     <Compile Include="Controllers\ValidationController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\Messages\EnglishMessages.cs" />
-    <Compile Include="UI\Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
