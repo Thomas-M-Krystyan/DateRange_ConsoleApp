@@ -16,21 +16,21 @@ namespace DateRangeConsoleApplication.Controllers
         }
 
         // Methods
-        private static IList<DateTime> ConvertInputsToDateTime(IList<T> collection, CultureInfo currentCulture)
+        private static IList<DateTime> ConvertInputsToDateTime(IList<T> collection, IFormatProvider currentCulture)
         {
             IList<DateTime> convertedDateCollection = new Collection<DateTime>();
 
             DateTime date;
             for (int i = 0; i < collection.Count; i++)
             {
+                TryParseDateTime(collection[i], currentCulture, out date);
+
                 if (convertedDateCollection.IsReadOnly)
                 {
-                    TryParseExactDateTime(collection[i], currentCulture, out date);
                     convertedDateCollection[i] = date;
                 }
                 else
                 {
-                    TryParseExactDateTime(collection[i], currentCulture, out date);
                     convertedDateCollection.Add(date);
                 }
             }
