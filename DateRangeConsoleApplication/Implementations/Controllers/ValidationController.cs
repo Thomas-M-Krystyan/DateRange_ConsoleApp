@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
-using static DateRangeConsoleApplication.Controllers.DisplayController;
-using static DateRangeConsoleApplication.UI.Messages.EnglishMessages;
+using DateRangeConsoleApplication.UI.Messages;
 
-namespace DateRangeConsoleApplication.Controllers
+namespace DateRangeConsoleApplication.Implementations.Controllers
 {
     internal class ValidationController
     {
@@ -26,7 +25,7 @@ namespace DateRangeConsoleApplication.Controllers
             {
                 return dateArray;
             }
-            throw new ValidationException(ApplyColorToMessage(ErrorValidationFailed, Color.DarkRed));
+            throw new ValidationException(DisplayController.ApplyColorToMessage(EnglishMessages.ErrorValidationFailed, DisplayController.Color.DarkRed));
         }
 
         #region Handling validation exceptions
@@ -39,7 +38,7 @@ namespace DateRangeConsoleApplication.Controllers
             }
             catch (Exception exception)
             {
-                Display(exception.Message);
+                DisplayController.Display(exception.Message);
                 Console.ReadKey();
                 return false;
             }
@@ -52,12 +51,12 @@ namespace DateRangeConsoleApplication.Controllers
             bool collectionNotExist = Equals(inputArray, null);
             if (collectionNotExist)
             {
-                throw new ArgumentNullException(nameof(inputArray), ApplyColorToMessage(ErrorNullCollection, Color.DarkRed));
+                throw new ArgumentNullException(nameof(inputArray), DisplayController.ApplyColorToMessage(EnglishMessages.ErrorNullCollection, DisplayController.Color.DarkRed));
             }
             bool collectionIsEmpty = !inputArray.Any();
             if (collectionIsEmpty)
             {
-                throw new ArgumentException(ApplyColorToMessage(ErrorEmptyCollection, Color.DarkRed), nameof(inputArray));
+                throw new ArgumentException(DisplayController.ApplyColorToMessage(EnglishMessages.ErrorEmptyCollection, DisplayController.Color.DarkRed), nameof(inputArray));
             }
 
             return true;
@@ -72,7 +71,7 @@ namespace DateRangeConsoleApplication.Controllers
                 bool inputCannotBeParsedToDate = !TryParseToDate(element, currentCulture, out DateTime date);
                 if (inputCannotBeParsedToDate)
                 {
-                    throw new FormatException(ApplyColorToMessage(ErrorWrongInputFormat(element, currentCulture), Color.DarkRed));
+                    throw new FormatException(DisplayController.ApplyColorToMessage(EnglishMessages.ErrorWrongInputFormat(element, currentCulture), DisplayController.Color.DarkRed));
                 }
             }
 
@@ -95,8 +94,8 @@ namespace DateRangeConsoleApplication.Controllers
                 bool previousDateIsLaterThanNextDate = previousDate > date;
                 if (previousDateIsLaterThanNextDate)
                 {
-                    throw new ArgumentException(ApplyColorToMessage(ErrorUnexpectedDateOrder(previousDate?.ToShortDateString(),
-                                                                                    date.ToShortDateString()), Color.DarkRed));
+                    throw new ArgumentException(DisplayController.ApplyColorToMessage(EnglishMessages.ErrorUnexpectedDateOrder(previousDate?.ToShortDateString(),
+                                                                                    date.ToShortDateString()), DisplayController.Color.DarkRed));
                 }
                 previousDate = date;
             }

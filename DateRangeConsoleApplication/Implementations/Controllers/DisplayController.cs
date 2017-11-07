@@ -1,7 +1,7 @@
 ﻿using System;
-using static DateRangeConsoleApplication.UI.Messages.EnglishMessages;
+using DateRangeConsoleApplication.UI.Messages;
 
-namespace DateRangeConsoleApplication.Controllers
+namespace DateRangeConsoleApplication.Implementations.Controllers
 {
     internal static class DisplayController
     {
@@ -26,7 +26,7 @@ namespace DateRangeConsoleApplication.Controllers
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
                     break;
                 default:
-                    throw new ArgumentException(ApplyColorToMessage(ErrorWrongMessageColor, Color.DarkRed));
+                    throw new ArgumentException(ApplyColorToMessage(EnglishMessages.ErrorWrongMessageColor, Color.DarkRed));
             }
 
             return message;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace DateRangeConsoleApplication.Controllers
+namespace DateRangeConsoleApplication.Implementations.Controllers
 {
     internal class ConversionController
     {

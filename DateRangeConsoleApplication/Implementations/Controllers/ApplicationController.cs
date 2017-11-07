@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace DateRangeConsoleApplication.Controllers
+namespace DateRangeConsoleApplication.Implementations.Controllers
 {
     internal class ApplicationController
     {

@@ -7,7 +7,7 @@ namespace DateRangeConsoleApplication.UI.Messages
     {
         // Error Messages
         internal const string ErrorNullCollection = "ERROR: There is no collection!";
-        internal const string ErrorEmptyCollection = "ERROR: Collection cannot be empty!";
+        internal const string ErrorEmptyCollection = "ERROR: Input cannot be empty!";
         internal const string ErrorWrongMessageColor = "ERROR: There is no such message color!";
         internal const string ErrorValidationFailed = "\nERROR: Validation failed. The program has stopped working!";
         internal const string ErrorInvalidFormatStrategy = "There is no such format option!";
