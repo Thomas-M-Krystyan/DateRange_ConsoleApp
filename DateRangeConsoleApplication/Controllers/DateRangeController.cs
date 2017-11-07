@@ -14,16 +14,17 @@ namespace DateRangeConsoleApplication.Controllers
 
         internal string AnalyzeData(DateTime[] dateArray, CultureInfo currentCulture)
         {
-            IEnumerable<Func<DateTime, DateTime, Similarity>> checkingFuncCriteriaList = PrepareCheckingFuncCriteriaList();
+            IEnumerable<Func<DateTime, DateTime, Similarity>> checkingFuncCriteriaList = PrepareComparisonFuncCriteriaList();
             Similarity checkingResult = CheckDateSimilarity(dateArray, checkingFuncCriteriaList);
 
             return GenerateRange(dateArray, checkingResult, currentCulture);
         }
 
+        #region Dates ranges checking strategy
         /// <summary> 
         /// Create generic collection of Func delegates used as criteria of checking DateTime type similarity
         /// </summary>
-        private static IEnumerable<Func<DateTime, DateTime, Similarity>> PrepareCheckingFuncCriteriaList()
+        private static IEnumerable<Func<DateTime, DateTime, Similarity>> PrepareComparisonFuncCriteriaList()
         {
             return new Collection<Func<DateTime, DateTime, Similarity>>()
             {
@@ -38,34 +39,21 @@ namespace DateRangeConsoleApplication.Controllers
         /// to find the narrowest similarities between them (identical full date, year, or month)
         /// </summary>
         private static Similarity CheckDateSimilarity(DateTime[] dateArray,
-                                                      IEnumerable<Func<DateTime, DateTime, Similarity>> checkingFuncCriteriaList)
+                                                      IEnumerable<Func<DateTime, DateTime, Similarity>> comparisonFuncCriteriaList)
         {
-            if (!dateArray.Any())
+            if (Equals(dateArray.Length, 1))
             {
                 return Similarity.SameDay;
             }
             HashSet<Similarity> checkingResultsSet = new HashSet<Similarity>();
             Similarity finalComparisonResult = Similarity.NoSimilarity;
 
-            foreach (var checkingCriterium in checkingFuncCriteriaList)
+            foreach (var comparisonCriterium in comparisonFuncCriteriaList)
             {
-                DateTime? previousDate = null;
-                Similarity currentComparisonResult;
-                //
-                foreach (var date in dateArray)
-                {
-                    if (previousDate != null)
-                    {
-                        currentComparisonResult = checkingCriterium((DateTime)previousDate, date);
-                        checkingResultsSet.Add(currentComparisonResult);
-                    }
-                    previousDate = date;
-                }
-                //
-                currentComparisonResult = checkingResultsSet.Count == 1 ? checkingResultsSet.First()
-                                                                        : Similarity.NoSimilarity;
-
-                //
+                Similarity currentComparisonResult = CheckDatesByComparisonCriterium(dateArray, comparisonCriterium);
+                checkingResultsSet.Add(currentComparisonResult);
+                currentComparisonResult = Equals(checkingResultsSet.Count, 1) ? checkingResultsSet.First()
+                                                                              : Similarity.NoSimilarity;
                 if (currentComparisonResult != Similarity.NoSimilarity)
                 {
                     finalComparisonResult = currentComparisonResult;
@@ -74,12 +62,30 @@ namespace DateRangeConsoleApplication.Controllers
                 {
                     return finalComparisonResult;
                 }
-                //
                 checkingResultsSet.Clear();
             }
 
             return finalComparisonResult;
         }
+
+        private static Similarity CheckDatesByComparisonCriterium(DateTime[] dateArray,
+                                                                  Func<DateTime, DateTime, Similarity> comparisonCriterium)
+        {
+            Similarity currentComparisonResult = Similarity.NoSimilarity;
+
+            DateTime? previousDate = null;
+            foreach (var date in dateArray)
+            {
+                if (previousDate != null)
+                {
+                    currentComparisonResult = comparisonCriterium((DateTime) previousDate, date);
+                }
+                previousDate = date;
+            }
+
+            return currentComparisonResult;
+        }
+        #endregion
 
         private static string GenerateRange(DateTime[] dateArray, Similarity checkingResult, CultureInfo currentCulture)
         {
@@ -116,7 +122,7 @@ namespace DateRangeConsoleApplication.Controllers
             string shortDateFormat = currentCulture.DateTimeFormat.ShortDatePattern;
             int letterCount = shortDateFormat.Count(letter => letter == 'd');
 
-            return letterCount == 1 ? date.Day.ToString() : date.ToString("dd", currentCulture);
+            return Equals(letterCount, 1) ? date.Day.ToString() : date.ToString("dd", currentCulture);
         }
     }
 }

@@ -13,11 +13,12 @@ namespace DateRangeConsoleApplication.Controllers
                 currentCulture = new CultureInfo("en-US");
 
                 ValidationController validator = new ValidationController();
-                DateTime[] validationResult = validator.CheckInputData(inputArray, currentCulture);
+                DateTime[] validationResult = validator.CheckInputArray(inputArray, currentCulture);
 
                 DateRangeController ranger = new DateRangeController();
                 string result = ranger.AnalyzeData(validationResult, currentCulture);
                 DisplayController.Display(result);
+                Console.ReadKey();
             }
             catch (Exception exception)
             {
