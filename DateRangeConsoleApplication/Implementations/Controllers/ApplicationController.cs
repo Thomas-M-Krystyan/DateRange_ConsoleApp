@@ -12,7 +12,6 @@ namespace DateRangeConsoleApplication.Implementations.Controllers
         internal void Start(string[] inputArray)
         {
             CultureInfo currentCulture = CultureInfo.CurrentCulture;
-//            currentCulture = new CultureInfo("en-US");
 
             ValidationController validator = new ValidationController();
 
