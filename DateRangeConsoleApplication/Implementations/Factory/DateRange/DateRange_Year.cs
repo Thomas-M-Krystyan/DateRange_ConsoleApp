@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Text.RegularExpressions;
 using DateRangeConsoleApplication.Interfaces.Factory.DateRange;
 
 namespace DateRangeConsoleApplication.Implementations.Factory.DateRange
@@ -27,11 +26,20 @@ namespace DateRangeConsoleApplication.Implementations.Factory.DateRange
 
         public override string ToString()
         {
-            string dateWithoutYear = this._firstDate.ToString(this._formatStyle, this._currentCulture).
-                                     Replace(this._firstDate.ToString("yyyy", this._currentCulture), string.Empty).
-                                     Trim(Convert.ToChar(this._dateSeparator));
+            string firstDateWithoutYear = DateRangeFactory.GetDateWithoutYearFrom(this._formatStyle, this._firstDate,
+                                                                                  this._dateSeparator, this._currentCulture);
+            string lastDateWithoutYear = DateRangeFactory.GetDateWithoutYearFrom(this._formatStyle, this._lastDate,
+                                                                                 this._dateSeparator, this._currentCulture);
 
-            return $"{dateWithoutYear} {this._hyphen} {this._lastDate.ToString(this._formatStyle, this._currentCulture)}";
+            // Date formats: YY(YYYY)-D(DD)-M(MM) or YY(YYYY)-M(MM)-D(DD)
+            bool dateStartsFromYear = DateRangeFactory.IsDateFormatBeginsFromYear(this._currentCulture);
+            if (dateStartsFromYear)
+            {
+                return $"{this._lastDate.Year}{this._dateSeparator}{firstDateWithoutYear} {this._hyphen} {lastDateWithoutYear}";
+            }
+
+            // Date formats: D(DD)-M(MM)-YY(YYYY) or M(MM)-D(DD)-YY(YYYY)
+            return $"{firstDateWithoutYear} {this._hyphen} {this._lastDate.ToString(this._formatStyle, this._currentCulture)}";
         }
     }
 }

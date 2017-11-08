@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using DateRangeConsoleApplication.Implementations.Controllers;
 using DateRangeConsoleApplication.Implementations.Factory.DateRange;
 using DateRangeConsoleApplication.Interfaces.Factory;
@@ -33,7 +34,7 @@ namespace DateRangeConsoleApplication.Implementations.Factory
             return GetRangeFrom(dateArray, checkingResult, currentCulture);
         }
 
-        #region Dates ranges checking strategy
+        #region Strategy: Dates ranges checking criteria
         /// <summary> 
         /// Create generic collection of Func delegates used as criteria of checking DateTime type similarity
         /// </summary>
@@ -51,10 +52,10 @@ namespace DateRangeConsoleApplication.Implementations.Factory
         /// Test DateTime elements in collection according to criteria on list of Func delegates
         /// to find the narrowest similarities between them (identical full date, year, or month)
         /// </summary>
-        private Similarity CheckDateSimilarity(DateTime[] dateArray,
+        private Similarity CheckDateSimilarity(IReadOnlyCollection<DateTime> dateArray,
                                                IEnumerable<Func<DateTime, DateTime, Similarity>> comparisonFuncCriteriaList)
         {
-            if (Equals(dateArray.Length, 1))
+            if (Equals(dateArray.Count, 1))
             {
                 return Similarity.SameDay;
             }
@@ -81,7 +82,7 @@ namespace DateRangeConsoleApplication.Implementations.Factory
             return finalComparisonResult;
         }
 
-        private Similarity CheckDateBy(Func<DateTime, DateTime, Similarity> comparisonCriterium, DateTime[] dateArray)
+        private Similarity CheckDateBy(Func<DateTime, DateTime, Similarity> comparisonCriterium, IEnumerable<DateTime> dateArray)
         {
             Similarity currentComparisonResult = Similarity.NoSimilarity;
 
@@ -99,6 +100,7 @@ namespace DateRangeConsoleApplication.Implementations.Factory
         }
         #endregion
 
+        #region Factory: Creating date range objects
         private IDateRange GetRangeFrom(DateTime[] dateArray, Similarity similarityResult, CultureInfo currentCulture)
         {
             const string hyphen = "\u2014";
@@ -114,7 +116,7 @@ namespace DateRangeConsoleApplication.Implementations.Factory
                     return new DateRangeSameDay(formatStyle, firstDate, currentCulture);
                 // 01-05.01.2017
                 case Similarity.SameMonth:
-                    return new DateRangeSameMonth(hyphen, formatStyle, firstDate, lastDate, currentCulture);
+                    return new DateRangeSameMonth(hyphen, formatStyle, firstDate, lastDate, currentCulture, dateSeparator);
                 // 01.01 – 05.02.2017
                 case Similarity.SameYear:
                     return new DateRangeSameYear(hyphen, formatStyle, firstDate, lastDate, currentCulture, dateSeparator);
@@ -126,5 +128,44 @@ namespace DateRangeConsoleApplication.Implementations.Factory
                                                           DisplayController.Color.DarkRed));
             }
         }
+
+        internal static bool IsDateFormatBeginsFromYear(CultureInfo currentCulture)
+        {
+            const string regexPattern = @"^y{2,4}\W+";
+
+            return IsPatternMatchToCulture(regexPattern, currentCulture);
+        }
+
+        internal static bool IsDateFormatBeginsFromMonth(CultureInfo currentCulture)
+        {
+            const string regexPattern = @"^M{1,3}\W+";
+
+            return IsPatternMatchToCulture(regexPattern, currentCulture);
+        }
+        
+        private static bool IsPatternMatchToCulture(string regexPattern, CultureInfo currentCulture)
+        {
+            Regex regex = new Regex(regexPattern);
+            string shortDate = currentCulture.DateTimeFormat.ShortDatePattern;
+
+            return regex.IsMatch(shortDate);
+        }
+
+        internal static string GetCultureDayFrom(DateTime date, CultureInfo currentCulture)
+        {
+            string shortDateFormat = currentCulture.DateTimeFormat.ShortDatePattern;
+            int letterCount = shortDateFormat.Count(letter => letter == 'd');
+
+            return Equals(letterCount, 1) ? date.Day.ToString() : date.ToString("dd", currentCulture);
+        }
+
+        internal static string GetDateWithoutYearFrom(string formatStyle, DateTime date,
+                                                      string dateSeparator, CultureInfo currentCulture)
+        {
+            return date.ToString(formatStyle, currentCulture).
+                   Replace(date.ToString("yyyy", currentCulture), string.Empty).
+                   Trim(Convert.ToChar(dateSeparator));
+        }
+        #endregion
     }
 }

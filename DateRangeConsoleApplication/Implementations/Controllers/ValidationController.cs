@@ -10,7 +10,7 @@ namespace DateRangeConsoleApplication.Implementations.Controllers
 {
     internal class ValidationController : IValidationController
     {
-        private Predicate<string[]> _validationCriteriaPredicate;
+        private Predicate<object[]> _validationCriteriaPredicate;
 
         public DateTime[] CheckInputArray(string[] inputArray, CultureInfo currentCulture)
         {
@@ -25,13 +25,14 @@ namespace DateRangeConsoleApplication.Implementations.Controllers
             bool isValid = IsEntireValidationSucceed(_validationCriteriaPredicate, inputArray);
             if (!isValid)
             {
-                throw new ValidationException(DisplayController.SetMessageColor(ErrorValidationFailed, DisplayController.Color.DarkRed));
+                throw new ValidationException(DisplayController.SetMessageColor(ErrorValidationFailed,
+                                              DisplayController.Color.DarkRed));
             }
 
             return dateArray;
         }
 
-        #region Handling validation exceptions
+        #region Handling inner validation exceptions
         private bool IsEntireValidationSucceed(Predicate<string[]> validationCriteriaPredicate, string[] inputArray)
         {
             try
@@ -75,7 +76,7 @@ namespace DateRangeConsoleApplication.Implementations.Controllers
         {
             foreach (var element in inputArray)
             {
-                bool canInputBeParsedToDate = TryParseToDate(element, currentCulture, out DateTime date);
+                bool canInputBeParsedToDate = TryParseExactToDate(element, currentCulture, out DateTime date);
                 if (!canInputBeParsedToDate)
                 {
                     throw new FormatException(DisplayController.SetMessageColor(ErrorWrongInputFormat(element, currentCulture),
@@ -86,13 +87,17 @@ namespace DateRangeConsoleApplication.Implementations.Controllers
             return true;
         }
 
-        internal static bool TryParseToDate(string element, CultureInfo currentCulture, out DateTime date)
+        internal static bool TryParseExactToDate(string element, CultureInfo currentCulture, out DateTime date)
         {
-            return DateTime.TryParse(element, currentCulture, DateTimeStyles.AssumeLocal, out date);
+            bool parseResult = DateTime.TryParseExact(element, currentCulture.DateTimeFormat.ShortDatePattern, currentCulture,
+                               DateTimeStyles.AssumeLocal, out date) || DateTime.TryParseExact(element, currentCulture.
+                               DateTimeFormat.LongDatePattern, currentCulture, DateTimeStyles.AssumeLocal, out date);
+
+            return parseResult;
         }
         #endregion
 
-        #region Validation: Compare date objects
+        #region Validation: Ascending dates order
         private bool IsDatesOrderAscending(IEnumerable<DateTime> dateArray)
         {
             DateTime? previousDate = null;
