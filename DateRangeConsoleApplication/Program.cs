@@ -1,4 +1,4 @@
-﻿using DateRangeConsoleApplication.Controllers;
+﻿using DateRangeConsoleApplication.Implementations.Controllers;
 
 namespace DateRangeConsoleApplication
 {

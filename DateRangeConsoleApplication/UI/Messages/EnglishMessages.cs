@@ -7,7 +7,7 @@ namespace DateRangeConsoleApplication.UI.Messages
     {
         // Error Messages
         internal const string ErrorNullCollection = "ERROR: There is no collection!";
-        internal const string ErrorEmptyCollection = "ERROR: Collection cannot be empty!";
+        internal const string ErrorEmptyCollection = "ERROR: Input cannot be empty!";
         internal const string ErrorWrongMessageColor = "ERROR: There is no such message color!";
         internal const string ErrorValidationFailed = "\nERROR: Validation failed. The program has stopped working!";
         internal const string ErrorInvalidFormatStrategy = "There is no such format option!";
@@ -36,7 +36,7 @@ namespace DateRangeConsoleApplication.UI.Messages
                    $"\"{exampleShortDateFormat}\" (short) or \"{exampleLongDateFormat}\" (long)\n\n" +
                    
                    $"Suggested separators are:\n" +
-                   $"\"{cultureDateSeparator}\" (for date) or \"{cultureTimeSeparator}\" (for time)";
+                   $"\"{cultureDateSeparator}\" (date) or \"{cultureTimeSeparator}\" (time)";
         }
 
         internal static string ErrorUnexpectedDateOrder(object previousDate, object nextDate)
@@ -44,5 +44,8 @@ namespace DateRangeConsoleApplication.UI.Messages
             return $"ERROR: The previous date \"{previousDate}\" cannot be later\n" +
                    $"\tthan the farther one \"{nextDate}\"!";
         }
+
+        // Information messages
+        internal const string MonitOperationSucceed = "Everything went OK!\n";
     }
 }
