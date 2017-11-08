@@ -27,11 +27,31 @@ namespace DateRangeConsoleApplication.Implementations.Factory.DateRange
 
         public override string ToString()
         {
-            string dateWithoutYear = this._firstDate.ToString(this._formatStyle, this._currentCulture).
-                                     Replace(this._firstDate.ToString("yyyy", this._currentCulture), string.Empty).
-                                     Trim(Convert.ToChar(this._dateSeparator));
+            bool dateStartsFromYear = CheckIfFormatBeginsFromYear();
+            if (dateStartsFromYear)
+            {
+                return $"{this._lastDate.Year}{this._dateSeparator}{DeleteYearFrom(this._firstDate)} " + 
+                       $"{this._hyphen} {DeleteYearFrom(this._lastDate)}";
+            }
 
-            return $"{dateWithoutYear} {this._hyphen} {this._lastDate.ToString(this._formatStyle, this._currentCulture)}";
+            return $"{DeleteYearFrom(this._firstDate)} {this._hyphen} " +
+                   $"{this._lastDate.ToString(this._formatStyle, this._currentCulture)}";
+        }
+
+        private bool CheckIfFormatBeginsFromYear()
+        {
+            const string regexPattern = @"^(yy|yyyy)\W+|(yyyy)\W+$";
+            Regex regex = new Regex(regexPattern);
+            string shortDate = this._currentCulture.DateTimeFormat.ShortDatePattern;
+
+            return regex.IsMatch(shortDate);
+        }
+
+        private string DeleteYearFrom(DateTime date)
+        {
+            return date.ToString(this._formatStyle, this._currentCulture).
+                   Replace(date.ToString("yyyy", this._currentCulture), string.Empty).
+                   Trim(Convert.ToChar(this._dateSeparator));
         }
     }
 }
