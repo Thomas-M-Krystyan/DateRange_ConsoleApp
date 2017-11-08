@@ -10,7 +10,7 @@ namespace DateRangeConsoleApplication.Implementations.Controllers
 {
     internal class ValidationController : IValidationController
     {
-        private Predicate<string[]> _validationCriteriaPredicate;
+        private Predicate<object[]> _validationCriteriaPredicate;
 
         public DateTime[] CheckInputArray(string[] inputArray, CultureInfo currentCulture)
         {
@@ -25,13 +25,14 @@ namespace DateRangeConsoleApplication.Implementations.Controllers
             bool isValid = IsEntireValidationSucceed(_validationCriteriaPredicate, inputArray);
             if (!isValid)
             {
-                throw new ValidationException(DisplayController.SetMessageColor(ErrorValidationFailed, DisplayController.Color.DarkRed));
+                throw new ValidationException(DisplayController.SetMessageColor(ErrorValidationFailed,
+                                              DisplayController.Color.DarkRed));
             }
 
             return dateArray;
         }
 
-        #region Handling validation exceptions
+        #region Handling inner validation exceptions
         private bool IsEntireValidationSucceed(Predicate<string[]> validationCriteriaPredicate, string[] inputArray)
         {
             try
@@ -92,7 +93,7 @@ namespace DateRangeConsoleApplication.Implementations.Controllers
         }
         #endregion
 
-        #region Validation: Compare date objects
+        #region Validation: Ascending dates order
         private bool IsDatesOrderAscending(IEnumerable<DateTime> dateArray)
         {
             DateTime? previousDate = null;
