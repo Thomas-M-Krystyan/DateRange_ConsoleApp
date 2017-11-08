@@ -76,7 +76,7 @@ namespace DateRangeConsoleApplication.Implementations.Controllers
         {
             foreach (var element in inputArray)
             {
-                bool canInputBeParsedToDate = TryParseToDate(element, currentCulture, out DateTime date);
+                bool canInputBeParsedToDate = TryParseExactToDate(element, currentCulture, out DateTime date);
                 if (!canInputBeParsedToDate)
                 {
                     throw new FormatException(DisplayController.SetMessageColor(ErrorWrongInputFormat(element, currentCulture),
@@ -87,9 +87,13 @@ namespace DateRangeConsoleApplication.Implementations.Controllers
             return true;
         }
 
-        internal static bool TryParseToDate(string element, CultureInfo currentCulture, out DateTime date)
+        internal static bool TryParseExactToDate(string element, CultureInfo currentCulture, out DateTime date)
         {
-            return DateTime.TryParse(element, currentCulture, DateTimeStyles.AssumeLocal, out date);
+            bool parseResult = DateTime.TryParseExact(element, currentCulture.DateTimeFormat.ShortDatePattern, currentCulture,
+                               DateTimeStyles.AssumeLocal, out date) || DateTime.TryParseExact(element, currentCulture.
+                               DateTimeFormat.LongDatePattern, currentCulture, DateTimeStyles.AssumeLocal, out date);
+
+            return parseResult;
         }
         #endregion
 
