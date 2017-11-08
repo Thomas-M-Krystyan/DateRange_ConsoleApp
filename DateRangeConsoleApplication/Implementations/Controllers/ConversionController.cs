@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace DateRangeConsoleApplication.Implementations.Controllers
@@ -19,9 +20,9 @@ namespace DateRangeConsoleApplication.Implementations.Controllers
             return convertedDateArray;
         }
 
-        private DateTime[] ConvertStringsToDateTime(string[] inputArray)
+        private DateTime[] ConvertStringsToDateTime(IReadOnlyList<string> inputArray)
         {
-            int inputArrayLength = inputArray.Length;
+            int inputArrayLength = inputArray.Count;
             DateTime[] convertedDateArray = new DateTime[inputArrayLength];
 
             DateTime date;
