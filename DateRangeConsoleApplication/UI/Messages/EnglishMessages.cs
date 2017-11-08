@@ -21,6 +21,8 @@ namespace DateRangeConsoleApplication.UI.Messages
             string cultureTimeSeparator = currentCulture.DateTimeFormat.TimeSeparator;
             string localCultureName = currentCulture.DisplayName;
             string englishCultureName = currentCulture.EnglishName;
+            string shortDateFormat = currentCulture.DateTimeFormat.ShortDatePattern;
+            string longDateFormat = currentCulture.DateTimeFormat.LongDatePattern;
             string exampleShortDateFormat = date.ToString("d", currentCulture);
             string exampleLongDateFormat = date.ToString("D", currentCulture);
 
@@ -33,7 +35,8 @@ namespace DateRangeConsoleApplication.UI.Messages
                    $"\"{localCultureName} / {englishCultureName}\"\n\n" +
 
                    $"Suggested date formats are:\n" +
-                   $"\"{exampleShortDateFormat}\" (short) or \"{exampleLongDateFormat}\" (long)\n\n" +
+                   $"\"{shortDateFormat}\" (short)\tor  \"{longDateFormat}\" (long)\n" +
+                   $"\"{exampleShortDateFormat}\" (example)\tor  \"{exampleLongDateFormat}\" (example)\n\n" +
                    
                    $"Suggested separators are:\n" +
                    $"\"{cultureDateSeparator}\" (date) or \"{cultureTimeSeparator}\" (time)";
