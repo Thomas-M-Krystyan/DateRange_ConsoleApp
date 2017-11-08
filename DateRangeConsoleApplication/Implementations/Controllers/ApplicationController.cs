@@ -7,9 +7,9 @@ using static DateRangeConsoleApplication.UI.Messages.EnglishMessages;
 
 namespace DateRangeConsoleApplication.Implementations.Controllers
 {
-    internal class ApplicationController
+    public class ApplicationController
     {
-        internal void Start(string[] inputArray)
+        public void Start(string[] inputArray)
         {
             CultureInfo currentCulture = CultureInfo.CurrentCulture;
 
