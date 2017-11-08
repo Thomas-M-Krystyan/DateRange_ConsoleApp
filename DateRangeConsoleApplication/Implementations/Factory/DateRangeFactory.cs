@@ -33,7 +33,7 @@ namespace DateRangeConsoleApplication.Implementations.Factory
             return GetRangeFrom(dateArray, checkingResult, currentCulture);
         }
 
-        #region Dates ranges checking strategy
+        #region Strategy: Dates ranges checking criteria
         /// <summary> 
         /// Create generic collection of Func delegates used as criteria of checking DateTime type similarity
         /// </summary>
@@ -51,10 +51,10 @@ namespace DateRangeConsoleApplication.Implementations.Factory
         /// Test DateTime elements in collection according to criteria on list of Func delegates
         /// to find the narrowest similarities between them (identical full date, year, or month)
         /// </summary>
-        private Similarity CheckDateSimilarity(DateTime[] dateArray,
+        private Similarity CheckDateSimilarity(IReadOnlyCollection<DateTime> dateArray,
                                                IEnumerable<Func<DateTime, DateTime, Similarity>> comparisonFuncCriteriaList)
         {
-            if (Equals(dateArray.Length, 1))
+            if (Equals(dateArray.Count, 1))
             {
                 return Similarity.SameDay;
             }
@@ -81,7 +81,7 @@ namespace DateRangeConsoleApplication.Implementations.Factory
             return finalComparisonResult;
         }
 
-        private Similarity CheckDateBy(Func<DateTime, DateTime, Similarity> comparisonCriterium, DateTime[] dateArray)
+        private Similarity CheckDateBy(Func<DateTime, DateTime, Similarity> comparisonCriterium, IEnumerable<DateTime> dateArray)
         {
             Similarity currentComparisonResult = Similarity.NoSimilarity;
 
@@ -99,6 +99,7 @@ namespace DateRangeConsoleApplication.Implementations.Factory
         }
         #endregion
 
+        #region Factory: Creating date range objects
         private IDateRange GetRangeFrom(DateTime[] dateArray, Similarity similarityResult, CultureInfo currentCulture)
         {
             const string hyphen = "\u2014";
@@ -126,5 +127,6 @@ namespace DateRangeConsoleApplication.Implementations.Factory
                                                           DisplayController.Color.DarkRed));
             }
         }
+        #endregion
     }
 }
