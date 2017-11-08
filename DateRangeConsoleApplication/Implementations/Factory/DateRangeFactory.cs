@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using DateRangeConsoleApplication.Implementations.Controllers;
 using DateRangeConsoleApplication.Implementations.Factory.DateRange;
 using DateRangeConsoleApplication.Interfaces.Factory;
@@ -115,7 +116,7 @@ namespace DateRangeConsoleApplication.Implementations.Factory
                     return new DateRangeSameDay(formatStyle, firstDate, currentCulture);
                 // 01-05.01.2017
                 case Similarity.SameMonth:
-                    return new DateRangeSameMonth(hyphen, formatStyle, firstDate, lastDate, currentCulture);
+                    return new DateRangeSameMonth(hyphen, formatStyle, firstDate, lastDate, currentCulture, dateSeparator);
                 // 01.01 – 05.02.2017
                 case Similarity.SameYear:
                     return new DateRangeSameYear(hyphen, formatStyle, firstDate, lastDate, currentCulture, dateSeparator);
@@ -126,6 +127,44 @@ namespace DateRangeConsoleApplication.Implementations.Factory
                     throw new ArgumentOutOfRangeException(DisplayController.SetMessageColor(ErrorInvalidFormatStrategy,
                                                           DisplayController.Color.DarkRed));
             }
+        }
+
+        internal static bool IsDateFormatBeginsFromYear(CultureInfo currentCulture)
+        {
+            const string regexPattern = @"^y{2,4}\W+";
+
+            return IsPatternMatchToCulture(regexPattern, currentCulture);
+        }
+
+        internal static bool IsDateFormatBeginsFromMonth(CultureInfo currentCulture)
+        {
+            const string regexPattern = @"^M{1,3}\W+";
+
+            return IsPatternMatchToCulture(regexPattern, currentCulture);
+        }
+        
+        private static bool IsPatternMatchToCulture(string regexPattern, CultureInfo currentCulture)
+        {
+            Regex regex = new Regex(regexPattern);
+            string shortDate = currentCulture.DateTimeFormat.ShortDatePattern;
+
+            return regex.IsMatch(shortDate);
+        }
+
+        internal static string GetCultureDayFrom(DateTime date, CultureInfo currentCulture)
+        {
+            string shortDateFormat = currentCulture.DateTimeFormat.ShortDatePattern;
+            int letterCount = shortDateFormat.Count(letter => letter == 'd');
+
+            return Equals(letterCount, 1) ? date.Day.ToString() : date.ToString("dd", currentCulture);
+        }
+
+        internal static string GetDateWithoutYearFrom(string formatStyle, DateTime date,
+                                                      string dateSeparator, CultureInfo currentCulture)
+        {
+            return date.ToString(formatStyle, currentCulture).
+                   Replace(date.ToString("yyyy", currentCulture), string.Empty).
+                   Trim(Convert.ToChar(dateSeparator));
         }
         #endregion
     }
