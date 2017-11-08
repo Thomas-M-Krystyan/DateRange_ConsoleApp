@@ -36,7 +36,7 @@ namespace DateRangeConsoleApplication.UI.Messages
                    $"\"{exampleShortDateFormat}\" (short) or \"{exampleLongDateFormat}\" (long)\n\n" +
                    
                    $"Suggested separators are:\n" +
-                   $"\"{cultureDateSeparator}\" (for date) or \"{cultureTimeSeparator}\" (for time)";
+                   $"\"{cultureDateSeparator}\" (date) or \"{cultureTimeSeparator}\" (time)";
         }
 
         internal static string ErrorUnexpectedDateOrder(object previousDate, object nextDate)
@@ -44,5 +44,8 @@ namespace DateRangeConsoleApplication.UI.Messages
             return $"ERROR: The previous date \"{previousDate}\" cannot be later\n" +
                    $"\tthan the farther one \"{nextDate}\"!";
         }
+
+        // Information messages
+        internal const string MonitOperationSucceed = "Everything went OK!\n";
     }
 }

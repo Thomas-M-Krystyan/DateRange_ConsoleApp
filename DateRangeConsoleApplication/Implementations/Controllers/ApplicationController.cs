@@ -1,5 +1,9 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using DateRangeConsoleApplication.Implementations.Factory;
+using DateRangeConsoleApplication.Interfaces.Factory.DateRange;
+using static DateRangeConsoleApplication.UI.Messages.EnglishMessages;
 
 namespace DateRangeConsoleApplication.Implementations.Controllers
 {
@@ -7,24 +11,25 @@ namespace DateRangeConsoleApplication.Implementations.Controllers
     {
         internal void Start(string[] inputArray)
         {
+            CultureInfo currentCulture = CultureInfo.CurrentCulture;
+//            currentCulture = new CultureInfo("en-US");
+
+            ValidationController validator = new ValidationController();
+
             try
             {
-                CultureInfo currentCulture = CultureInfo.CurrentUICulture;
-                currentCulture = new CultureInfo("en-US");
+                DateRangeFactory dateRange = new DateRangeFactory(validator);
+                IDateRange result = dateRange.From(inputArray, currentCulture);
 
-                ValidationController validator = new ValidationController();
-                DateTime[] validationResult = validator.CheckInputArray(inputArray, currentCulture);
-
-                DateRangeController ranger = new DateRangeController();
-                string result = ranger.AnalyzeData(validationResult, currentCulture);
-                DisplayController.Display(result);
-                Console.ReadKey();
+                DisplayController.Display(DisplayController.SetMessageColor(MonitOperationSucceed, 
+                                          DisplayController.Color.DarkGreen));
+                DisplayController.Display(result.ToString());
             }
-            catch (Exception exception)
+            catch (ValidationException exception)
             {
                 DisplayController.Display(exception.Message);
-                Console.ReadKey();
             }
+            Console.ReadKey();
         }
     }
 }

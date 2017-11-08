@@ -45,11 +45,15 @@
   <ItemGroup>
     <Compile Include="Implementations\Controllers\ApplicationController.cs" />
     <Compile Include="Implementations\Controllers\ConversionController.cs" />
-    <Compile Include="Implementations\Controllers\DateRangeController.cs" />
+    <Compile Include="Implementations\Factory\DateRangeFactory.cs" />
     <Compile Include="Implementations\Controllers\DisplayController.cs" />
     <Compile Include="Implementations\Controllers\ValidationController.cs" />
+    <Compile Include="Implementations\Factory\DateRange\DateRange_Day.cs" />
+    <Compile Include="Implementations\Factory\DateRange\DateRange_Month.cs" />
+    <Compile Include="Implementations\Factory\DateRange\DateRange_Various.cs" />
+    <Compile Include="Implementations\Factory\DateRange\DateRange_Year.cs" />
     <Compile Include="Interfaces\Factory\IDateRangeFactory.cs" />
-    <Compile Include="Interfaces\Factory\Range\IDateRange.cs" />
+    <Compile Include="Interfaces\Factory\DateRange\IDateRange.cs" />
     <Compile Include="Interfaces\Validation\IValidationController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
