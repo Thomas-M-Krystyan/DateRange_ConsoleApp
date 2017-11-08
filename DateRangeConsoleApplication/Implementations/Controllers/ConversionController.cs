@@ -28,7 +28,7 @@ namespace DateRangeConsoleApplication.Implementations.Controllers
             DateTime date;
             for (int i = 0; i < inputArrayLength; i++)
             {
-                ValidationController.TryParseToDate(inputArray[i], this._currentCulture, out date);
+                ValidationController.TryParseExactToDate(inputArray[i], this._currentCulture, out date);
                 convertedDateArray[i] = date;
             }
 
