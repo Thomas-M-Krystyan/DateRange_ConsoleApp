@@ -3,6 +3,8 @@ The stable first release version of the application which gets inputs (correspon
 to date formats) as program arguments, and makes culture dependent date ranges from them.
 
 ## INSTALLATION
+> Recommended article: [Compiling and running C# scripts](https://www.codetuts.tech/compile-c-sharp-command-line/)
+
 1. Install .NET Framework (the latest version is advised) on your computer to compile<br>
 source code on your own, or use already compiled release version in the `Program.exe`
 2. (Method no.1) Compile program on your own:
