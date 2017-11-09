@@ -24,7 +24,18 @@ namespace DateRangeConsoleApplicationTests.Implementations.Controllers
             ValidationController validator = new ValidationController();
 
             // Assert
-            Assert.Throws<ArgumentException>(() => validator.CheckInputArray(inputArray, _currentCulture));
+            Assert.Throws<ArgumentException>(() => validator.CheckInputArray(inputArray, this._currentCulture));
+        }
+
+        [Test(Description = "Test if single passed input is invalid")]
+        public void Test_IfSingleInputCannotBeConvertedToDate_ThrowsException()
+        {
+            // Arrange
+            string[] inputArray = new string[] {"!@#$%^&*"};
+            ValidationController validator = new ValidationController();
+
+            // Assert
+            Assert.Throws<FormatException>(() => validator.CheckInputArray(inputArray, this._currentCulture));
         }
     }
 }
