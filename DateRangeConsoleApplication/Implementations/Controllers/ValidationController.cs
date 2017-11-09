@@ -6,7 +6,6 @@ using System.Linq;
 using DateRangeConsoleApplication.Interfaces.Validation;
 using static DateRangeConsoleApplication.UI.Messages.EnglishMessages;
 
-
 namespace DateRangeConsoleApplication.Implementations.Controllers
 {
     public class ValidationController : IValidationController
@@ -36,17 +35,9 @@ namespace DateRangeConsoleApplication.Implementations.Controllers
         #region Handling inner validation exceptions
         private bool IsEntireValidationSucceed(Predicate<string[]> validationCriteriaPredicate, string[] inputArray)
         {
-            try
-            {
-                validationCriteriaPredicate(inputArray);
-                return true;
-            }
-            catch (Exception exception)
-            {
-                DisplayController.Display(exception.Message);
-                Console.ReadKey();
-                return false;
-            }
+            validationCriteriaPredicate(inputArray);
+
+            return true;
         }
         #endregion
 

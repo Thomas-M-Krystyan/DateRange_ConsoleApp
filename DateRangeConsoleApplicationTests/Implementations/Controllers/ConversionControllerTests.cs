@@ -8,7 +8,7 @@ namespace DateRangeConsoleApplicationTests.Implementations.Controllers
     [TestFixture]
     public class ConversionControllerTest
     {
-        [Test(Description = "Test if passed collection is not null")]
+        [Test(Description = "Test if passed collection is null")]
         public void Test_IfCollectionIsNull_ThrowsException()
         {
             // Arrange
