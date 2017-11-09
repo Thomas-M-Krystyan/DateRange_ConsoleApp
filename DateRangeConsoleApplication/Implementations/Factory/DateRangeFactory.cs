@@ -103,7 +103,7 @@ namespace DateRangeConsoleApplication.Implementations.Factory
         #region Factory: Creating date range objects
         private IDateRange GetRangeFrom(DateTime[] dateArray, Similarity similarityResult, CultureInfo currentCulture)
         {
-            const string hyphen = "\u2014";
+            const string hyphen = "—";
             const string formatStyle = "d";
             DateTime firstDate = dateArray.First();
             DateTime lastDate = dateArray.Last();
