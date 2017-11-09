@@ -6,9 +6,10 @@ using System.Linq;
 using DateRangeConsoleApplication.Interfaces.Validation;
 using static DateRangeConsoleApplication.UI.Messages.EnglishMessages;
 
+
 namespace DateRangeConsoleApplication.Implementations.Controllers
 {
-    internal class ValidationController : IValidationController
+    public class ValidationController : IValidationController
     {
         private Predicate<object[]> _validationCriteriaPredicate;
 
@@ -22,7 +23,7 @@ namespace DateRangeConsoleApplication.Implementations.Controllers
 
             this._validationCriteriaPredicate += stringArray => IsDatesOrderAscending(dateArray);
 
-            bool isValid = IsEntireValidationSucceed(_validationCriteriaPredicate, inputArray);
+            bool isValid = IsEntireValidationSucceed(this._validationCriteriaPredicate, inputArray);
             if (!isValid)
             {
                 throw new ValidationException(DisplayController.SetMessageColor(ErrorValidationFailed,
@@ -52,19 +53,11 @@ namespace DateRangeConsoleApplication.Implementations.Controllers
         #region Validation: Proper collection
         private bool IsCollectionValid(string[] inputArray)
         {
-            bool collectionNotExist = Equals(inputArray, null);
-            if (collectionNotExist)
-            {
-                throw new ArgumentNullException(nameof(inputArray),
-                                                DisplayController.SetMessageColor(ErrorNullCollection,
-                                                DisplayController.Color.DarkRed));
-            }
             bool collectionIsEmpty = !inputArray.Any();
             if (collectionIsEmpty)
             {
-                throw new ArgumentException(DisplayController.SetMessageColor(ErrorEmptyCollection, 
-                                            DisplayController.Color.DarkRed),
-                                            nameof(inputArray));
+                throw new ArgumentException(DisplayController.SetMessageColor(ErrorEmptyCollection,
+                                            DisplayController.Color.DarkRed), nameof(inputArray));
             }
 
             return true;

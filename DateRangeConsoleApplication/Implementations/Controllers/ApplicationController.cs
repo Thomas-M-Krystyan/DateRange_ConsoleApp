@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using DateRangeConsoleApplication.Implementations.Factory;
 using DateRangeConsoleApplication.Interfaces.Factory.DateRange;
@@ -24,7 +23,7 @@ namespace DateRangeConsoleApplication.Implementations.Controllers
                                           DisplayController.Color.DarkGreen));
                 DisplayController.Display(result.ToString());
             }
-            catch (ValidationException exception)
+            catch (Exception exception)
             {
                 DisplayController.Display(exception.Message);
             }
