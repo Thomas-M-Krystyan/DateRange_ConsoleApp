@@ -4,7 +4,7 @@ using DateRangeConsoleApplication.Interfaces.Factory.DateRange;
 
 namespace DateRangeConsoleApplication.Implementations.Factory.DateRange
 {
-    internal class DateRangeVarious : IDateRange
+    public class DateRangeVarious : IDateRange
     {
         private readonly string _hyphen;
         private readonly string _formatStyle;
@@ -12,8 +12,8 @@ namespace DateRangeConsoleApplication.Implementations.Factory.DateRange
         private readonly DateTime _lastDate;
         private readonly CultureInfo _currentCulture;
 
-        internal DateRangeVarious(string hyphen, string formatStyle, DateTime firstDate,
-                                  DateTime lastDate, CultureInfo currentCulture)
+        public DateRangeVarious(string hyphen, string formatStyle, DateTime firstDate,
+                                DateTime lastDate, CultureInfo currentCulture)
         {
             this._hyphen = hyphen;
             this._formatStyle = formatStyle;

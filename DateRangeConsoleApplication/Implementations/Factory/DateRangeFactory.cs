@@ -13,13 +13,13 @@ using static DateRangeConsoleApplication.UI.Messages.EnglishMessages;
 
 namespace DateRangeConsoleApplication.Implementations.Factory
 {
-    internal class DateRangeFactory : IDateRangeFactory
+    public class DateRangeFactory : IDateRangeFactory
     {
         private enum Similarity { NoSimilarity, SameYear, SameMonth, SameDay }
 
         private readonly IValidationController _validationController;
 
-        internal DateRangeFactory(IValidationController validationController)
+        public DateRangeFactory(IValidationController validationController)
         {
             this._validationController = validationController;
         }

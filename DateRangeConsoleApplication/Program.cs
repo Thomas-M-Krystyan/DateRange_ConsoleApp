@@ -7,7 +7,7 @@ namespace DateRangeConsoleApplication
         private static void Main(string[] arguments)
         {
             var application = new ApplicationController();
-            application.Start(new string[] {});
+            application.Start(arguments);
         }
     }
 }

@@ -4,7 +4,7 @@ using DateRangeConsoleApplication.Interfaces.Factory.DateRange;
 
 namespace DateRangeConsoleApplication.Implementations.Factory.DateRange
 {
-    internal class DateRangeSameYear : IDateRange
+    public class DateRangeSameYear : IDateRange
     {
         private readonly string _hyphen;
         private readonly string _formatStyle;
@@ -13,8 +13,8 @@ namespace DateRangeConsoleApplication.Implementations.Factory.DateRange
         private readonly CultureInfo _currentCulture;
         private readonly string _dateSeparator;
 
-        internal DateRangeSameYear(string hyphen, string formatStyle, DateTime firstDate, DateTime lastDate,
-                                   CultureInfo currentCulture, string dateSeparator)
+        public DateRangeSameYear(string hyphen, string formatStyle, DateTime firstDate, DateTime lastDate,
+                                 CultureInfo currentCulture, string dateSeparator)
         {
             this._hyphen = hyphen;
             this._formatStyle = formatStyle;
