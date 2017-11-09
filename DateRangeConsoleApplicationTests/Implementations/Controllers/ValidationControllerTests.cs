@@ -8,16 +8,23 @@ namespace DateRangeConsoleApplicationTests.Implementations.Controllers
     [TestFixture]
     public class ValidationControllerTest
     {
+        private CultureInfo _currentCulture = CultureInfo.CurrentCulture;
+
+        [SetUp]
+        public void Init()
+        {
+            this._currentCulture = CultureInfo.CurrentCulture;
+        }
+
         [Test(Description = "Test if passed collection is empty")]
         public void Test_IfCollectionIsEmpty_ThrowsException()
         {
             // Arrange
             string[] inputArray = new string[] { };
-            CultureInfo currentCulture = CultureInfo.CurrentCulture;
             ValidationController validator = new ValidationController();
 
             // Assert
-            Assert.Throws<ArgumentException>(() => validator.CheckInputArray(inputArray, currentCulture));
+            Assert.Throws<ArgumentException>(() => validator.CheckInputArray(inputArray, _currentCulture));
         }
     }
 }
