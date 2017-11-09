@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using static DateRangeConsoleApplication.UI.Messages.EnglishMessages;
 
 namespace DateRangeConsoleApplication.Implementations.Controllers
 {
-    internal class ConversionController
+    public class ConversionController
     {
         private readonly CultureInfo _currentCulture;
 
-        internal ConversionController(CultureInfo currentCulture)
+        public ConversionController(CultureInfo currentCulture)
         {
             this._currentCulture = currentCulture;
         }
 
-        internal DateTime[] ProcessInputArray(string[] inputArray)
+        public DateTime[] ProcessInputArray(string[] inputArray)
         {
             DateTime[] convertedDateArray = ConvertStringsToDateTime(inputArray);
             
@@ -22,6 +23,13 @@ namespace DateRangeConsoleApplication.Implementations.Controllers
 
         private DateTime[] ConvertStringsToDateTime(IReadOnlyList<string> inputArray)
         {
+            bool collectionNotExist = Equals(inputArray, null);
+            if (collectionNotExist)
+            {
+                throw new ArgumentNullException(nameof(inputArray), DisplayController.SetMessageColor(ErrorNullCollection,
+                                                DisplayController.Color.DarkRed));
+            }
+
             int inputArrayLength = inputArray.Count;
             DateTime[] convertedDateArray = new DateTime[inputArrayLength];
 

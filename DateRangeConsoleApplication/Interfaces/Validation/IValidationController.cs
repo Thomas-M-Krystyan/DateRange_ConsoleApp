@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace DateRangeConsoleApplication.Interfaces.Validation
 {
-    internal interface IValidationController
+    public interface IValidationController
     {
        DateTime[] CheckInputArray(string[] stringArray, CultureInfo currentCulture);
     }

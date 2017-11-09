@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using DateRangeConsoleApplication.Implementations.Factory;
 using DateRangeConsoleApplication.Interfaces.Factory.DateRange;
@@ -7,9 +6,9 @@ using static DateRangeConsoleApplication.UI.Messages.EnglishMessages;
 
 namespace DateRangeConsoleApplication.Implementations.Controllers
 {
-    internal class ApplicationController
+    public class ApplicationController
     {
-        internal void Start(string[] inputArray)
+        public void Start(string[] inputArray)
         {
             CultureInfo currentCulture = CultureInfo.CurrentCulture;
 
@@ -24,7 +23,7 @@ namespace DateRangeConsoleApplication.Implementations.Controllers
                                           DisplayController.Color.DarkGreen));
                 DisplayController.Display(result.ToString());
             }
-            catch (ValidationException exception)
+            catch (Exception exception)
             {
                 DisplayController.Display(exception.Message);
             }

@@ -13,13 +13,13 @@ using static DateRangeConsoleApplication.UI.Messages.EnglishMessages;
 
 namespace DateRangeConsoleApplication.Implementations.Factory
 {
-    internal class DateRangeFactory : IDateRangeFactory
+    public class DateRangeFactory : IDateRangeFactory
     {
         private enum Similarity { NoSimilarity, SameYear, SameMonth, SameDay }
 
         private readonly IValidationController _validationController;
 
-        internal DateRangeFactory(IValidationController validationController)
+        public DateRangeFactory(IValidationController validationController)
         {
             this._validationController = validationController;
         }
@@ -103,7 +103,7 @@ namespace DateRangeConsoleApplication.Implementations.Factory
         #region Factory: Creating date range objects
         private IDateRange GetRangeFrom(DateTime[] dateArray, Similarity similarityResult, CultureInfo currentCulture)
         {
-            const string hyphen = "\u2014";
+            const string hyphen = "—";
             const string formatStyle = "d";
             DateTime firstDate = dateArray.First();
             DateTime lastDate = dateArray.Last();
