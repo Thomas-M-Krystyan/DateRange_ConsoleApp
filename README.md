@@ -1,5 +1,5 @@
 ## DESCRIPTION
-The stable first release version of the application which gets inputs (that corresponding<br>
+Second stable release version of the console application which gets inputs (corresponding<br>
 to date formats) as program arguments, and makes culture dependent date ranges from them.
 
 ## INSTALLATION
