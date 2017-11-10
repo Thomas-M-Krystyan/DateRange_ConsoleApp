@@ -882,5 +882,222 @@ namespace DateRangeConsoleApplicationTests.Implementations.Factory
                 Assert.AreEqual(expectedResult, actualResult.ToString());
             }
         }
+
+        [TestFixture]
+        public class AmericanCultureTests : DateRangeFactoryTests
+        {
+            [SetUp]
+            public void Init()
+            {
+                this._currentCulture = new CultureInfo("en-US");
+                this._validator = new ValidationController();
+                this._dateRange = new DateRangeFactory(this._validator);
+            }
+
+            [Test(Description = "Single date returns DateRangeDay object")]
+            [Category("Date range: Day")]
+            public void Test_SingleDate_ForAmericanCulture_ReturnsDateRangeDay()
+            {
+                // Arrange
+                const string firstDate = "11/9/2017";
+                string[] inputArray = new string[1] { firstDate };
+                Type expectedResult = typeof(DateRangeSameDay);
+
+                // Act
+                IDateRange actualResult = this._dateRange.From(inputArray, this._currentCulture);
+
+                // Assert
+                Assert.AreEqual(expectedResult, actualResult.GetType());
+            }
+
+            [Test(Description = "Single date returns DateRangeDay string")]
+            [Category("Date range: Day")]
+            public void Test_IfSameDate_ForAmericanCulture_ReturnsProperToStringRange()
+            {
+                // Arrange
+                const string firstDate = "11/9/2017";
+                string[] inputArray = new string[1] { firstDate };
+                const string expectedResult = "11/9/2017";
+
+                // Act
+                IDateRange actualResult = this._dateRange.From(inputArray, this._currentCulture);
+
+                // Assert
+                Assert.AreEqual(expectedResult, actualResult.ToString());
+            }
+
+            [Test(Description = "Two same dates returns DateRangeDay string")]
+            [Category("Date range: Day")]
+            public void Test_IfTwoSameDates_ForAmericanCulture_ReturnsProperToStringRange()
+            {
+                // Arrange
+                const string firstDate = "11/9/2017";
+                const string secondDate = "11/9/2017";
+                string[] inputArray = new string[2] { firstDate, secondDate };
+                const string expectedResult = "11/9/2017";
+
+                // Act
+                IDateRange actualResult = this._dateRange.From(inputArray, this._currentCulture);
+
+                // Assert
+                Assert.AreEqual(expectedResult, actualResult.ToString());
+            }
+
+            [Test(Description = "Two dates with the same month returns DateRangeMonth object")]
+            [Category("Date range: Month")]
+            public void Test_IfTwoDatesWithSameMonth_ForAmericanCulture_ReturnsDateRangeMonth()
+            {
+                // Arrange
+                const string firstDate = "11/15/2017";
+                const string secondDate = "11/20/2017";
+                string[] inputArray = new string[2] { firstDate, secondDate };
+                Type expectedResult = typeof(DateRangeSameMonth);
+
+                // Act
+                IDateRange actualResult = this._dateRange.From(inputArray, this._currentCulture);
+
+                // Assert
+                Assert.AreEqual(expectedResult, actualResult.GetType());
+            }
+
+            [Test(Description = "Two dates with the same month returns DateRangeMonth string")]
+            [Category("Date range: Month")]
+            public void Test_IfTwoDatesWithSameMonth_ForAmericanCulture_ReturnsProperToStringRange()
+            {
+                // Arrange
+                const string firstDate = "11/15/2017";
+                const string secondDate = "11/20/2017";
+                string[] inputArray = new string[2] { firstDate, secondDate };
+                const string expectedResult = "11/15—20/2017";
+
+                // Act
+                IDateRange actualResult = this._dateRange.From(inputArray, this._currentCulture);
+
+                // Assert
+                Assert.AreEqual(expectedResult, actualResult.ToString());
+            }
+
+            [Test(Description = "Three dates with the same month returns DateRangeMonth string")]
+            [Category("Date range: Month")]
+            public void Test_IfThreeDatesWithSameMonth_ForAmericanCulture_ReturnsProperToStringRange()
+            {
+                // Arrange
+                const string firstDate = "11/15/2017";
+                const string secondDate = "11/20/2017";
+                const string thirdDate = "11/25/2017";
+                string[] inputArray = new string[3] { firstDate, secondDate, thirdDate };
+                const string expectedResult = "11/15—25/2017";
+
+                // Act
+                IDateRange actualResult = this._dateRange.From(inputArray, this._currentCulture);
+
+                // Assert
+                Assert.AreEqual(expectedResult, actualResult.ToString());
+            }
+
+            [Test(Description = "Two dates with the same year returns DateRangeYear object")]
+            [Category("Date range: Year")]
+            public void Test_IfTwoDatesWithSameYear_ForAmericanCulture_ReturnsDateRangeYear()
+            {
+                // Arrange
+                const string firstDate = "10/15/2017";
+                const string secondDate = "11/20/2017";
+                string[] inputArray = new string[2] { firstDate, secondDate };
+                Type expectedResult = typeof(DateRangeSameYear);
+
+                // Act
+                IDateRange actualResult = this._dateRange.From(inputArray, this._currentCulture);
+
+                // Assert
+                Assert.AreEqual(expectedResult, actualResult.GetType());
+            }
+
+            [Test(Description = "Two dates with the same year returns DateRangeYear string")]
+            [Category("Date range: Year")]
+            public void Test_IfTwoDatesWithSameYear_ForAmericanCulture_ReturnsProperToStringRange()
+            {
+                // Arrange
+                const string firstDate = "10/15/2017";
+                const string secondDate = "11/20/2017";
+                string[] inputArray = new string[2] { firstDate, secondDate };
+                const string expectedResult = "10/15 — 11/20/2017";
+
+                // Act
+                IDateRange actualResult = this._dateRange.From(inputArray, this._currentCulture);
+
+                // Assert
+                Assert.AreEqual(expectedResult, actualResult.ToString());
+            }
+
+            [Test(Description = "Three dates with the same year returns DateRangeYear string")]
+            [Category("Date range: Year")]
+            public void Test_IfThreeDatesWithSameYear_ForAmericanCulture_ReturnsProperToStringRange()
+            {
+                // Arrange
+                const string firstDate = "10/15/2017";
+                const string secondDate = "11/20/2017";
+                const string thirdDate = "12/25/2017";
+                string[] inputArray = new string[3] { firstDate, secondDate, thirdDate };
+                const string expectedResult = "10/15 — 12/25/2017";
+
+                // Act
+                IDateRange actualResult = this._dateRange.From(inputArray, this._currentCulture);
+
+                // Assert
+                Assert.AreEqual(expectedResult, actualResult.ToString());
+            }
+
+            [Test(Description = "Two different dates returns DateRangeVarious object")]
+            [Category("Date range: Various")]
+            public void Test_IfTwoDifferentDates_ForAmericanCulture_ReturnsDateRangeVarious()
+            {
+                // Arrange
+                const string firstDate = "10/15/2017";
+                const string secondDate = "11/20/2018";
+                string[] inputArray = new string[2] { firstDate, secondDate };
+                Type expectedResult = typeof(DateRangeVarious);
+
+                // Act
+                IDateRange actualResult = this._dateRange.From(inputArray, this._currentCulture);
+
+                // Assert
+                Assert.AreEqual(expectedResult, actualResult.GetType());
+            }
+
+            [Test(Description = "Two different dates returns DateRangeVarious string")]
+            [Category("Date range: Various")]
+            public void Test_IfTwoDifferentDates_ForAmericanCulture_ReturnsProperToStringRange()
+            {
+                // Arrange
+                const string firstDate = "10/15/2017";
+                const string secondDate = "11/20/2018";
+                string[] inputArray = new string[2] { firstDate, secondDate };
+                const string expectedResult = "10/15/2017 — 11/20/2018";
+
+                // Act
+                IDateRange actualResult = this._dateRange.From(inputArray, this._currentCulture);
+
+                // Assert
+                Assert.AreEqual(expectedResult, actualResult.ToString());
+            }
+
+            [Test(Description = "Three different dates returns DateRangeVarious string")]
+            [Category("Date range: Various")]
+            public void Test_IfThreeDifferentDates_ForAmericanCulture_ReturnsProperToStringRange()
+            {
+                // Arrange
+                const string firstDate = "10/15/2017";
+                const string secondDate = "11/20/2018";
+                const string thirdDate = "12/25/2019";
+                string[] inputArray = new string[3] { firstDate, secondDate, thirdDate };
+                const string expectedResult = "10/15/2017 — 12/25/2019";
+
+                // Act
+                IDateRange actualResult = this._dateRange.From(inputArray, this._currentCulture);
+
+                // Assert
+                Assert.AreEqual(expectedResult, actualResult.ToString());
+            }
+        }
     }
 }
