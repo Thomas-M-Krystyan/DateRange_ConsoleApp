@@ -159,11 +159,19 @@ namespace DateRangeConsoleApplication.Implementations.Factory
             return Equals(letterCount, 1) ? date.Day.ToString() : date.ToString("dd", currentCulture);
         }
 
+        private static string GetCultureYearFrom(DateTime date, CultureInfo currentCulture)
+        {
+            string shortDateFormat = currentCulture.DateTimeFormat.ShortDatePattern;
+            int letterCount = shortDateFormat.Count(letter => letter == 'y');
+
+            return Equals(letterCount, 4) ? date.Year.ToString() : date.ToString("yy", currentCulture);
+        }
+
         internal static string GetDateWithoutYearFrom(string formatStyle, DateTime date,
                                                       string dateSeparator, CultureInfo currentCulture)
         {
             return date.ToString(formatStyle, currentCulture).
-                   Replace(date.ToString("yyyy", currentCulture), string.Empty).
+                   Replace(date.ToString(GetCultureYearFrom(date, currentCulture), currentCulture), string.Empty).
                    Trim(Convert.ToChar(dateSeparator));
         }
         #endregion
