@@ -38,6 +38,20 @@ namespace DateRangeConsoleApplicationTests.Implementations.Controllers
             "17年11月9日", "2017年111月9日", "2017年11月99日", "2017年11月9日人間"
         };
 
+        private readonly string[] _invalidCroatianDates = new string[]
+        {
+            "9. studenogG 2017.", "9 studenog 2017", "99.01.2017.", "99.1.2017.",
+            "9.111.2017.", "09.111.2017.", "32.5.2017.", "32.05.2017.", "29.02.2017.",
+            "09.01.2017",  "9.01.2017",    "09.1.2017",  "99.01.2017",  "99.1.2017",
+            "9.111.2017",  "09.111.2017",  "32.5.2017",  "32.05.2017",  "29.02.2017",
+            "09-01-2017",  "9-01-2017",    "09-1-2017",  "99-01-2017",  "99-1-2017",
+            "9-111-2017",  "09-111-2017",  "32-5-2017",  "32-05-2017",  "29-02-2017",
+            "09/01/2017",  "9/01/2017",    "09/1/2017",  "99/01/2017",  "99/1/2017",
+            "9/111/2017",  "09/111/2017",  "32/5/2017",  "32/05-2017",  "29/02/2017",
+            "09 01 2017",  "9 01 2017",    "09 1 2017",  "99 01 2017",  "99 1 2017",
+            "9 111 2017",  "09 111 2017",  "32 5 2017",  "32 05 2017",  "29 02 2017"
+        };
+
         [SetUp]
         public void Init()
         {
@@ -50,7 +64,7 @@ namespace DateRangeConsoleApplicationTests.Implementations.Controllers
         public void Test_IfCollectionIsEmpty_ThrowsException()
         {
             // Arrange
-            string[] inputArray = new string[] { };
+            string[] inputArray = new string[0] { };
 
             // Assert
             Assert.Throws<ArgumentException>(() => this._validator.CheckInputArray(inputArray, this._currentCulture));
@@ -61,7 +75,7 @@ namespace DateRangeConsoleApplicationTests.Implementations.Controllers
         public void Test_IfSingleInput_CannotBeConvertedToDate_ThrowsException()
         {
             // Arrange
-            string[] inputArray = new string[] {"!@#$%^&*"};
+            string[] inputArray = new string[1] {"!@#$%^&*"};
 
             // Assert
             Assert.Throws<FormatException>(() => this._validator.CheckInputArray(inputArray, this._currentCulture));
@@ -72,7 +86,7 @@ namespace DateRangeConsoleApplicationTests.Implementations.Controllers
         public void Test_IfFromTwoInputs_First_CannotBeConvertedToDate_ThrowsException()
         {
             // Arrange
-            string[] inputArray = new string[] { "!@#$%^&*", "2017-11-09" };
+            string[] inputArray = new string[2] { "!@#$%^&*", "2017-11-09" };
 
             // Assert
             Assert.Throws<FormatException>(() => this._validator.CheckInputArray(inputArray, this._currentCulture));
@@ -83,7 +97,7 @@ namespace DateRangeConsoleApplicationTests.Implementations.Controllers
         public void Test_IfFromTwoInputs_Second_CannotBeConvertedToDate_ThrowsException()
         {
             // Arrange
-            string[] inputArray = new string[] { "2017-11-09", "!@#$%^&*" };
+            string[] inputArray = new string[2] { "2017-11-09", "!@#$%^&*" };
 
             // Assert
             Assert.Throws<FormatException>(() => this._validator.CheckInputArray(inputArray, this._currentCulture));
@@ -94,7 +108,7 @@ namespace DateRangeConsoleApplicationTests.Implementations.Controllers
         public void Test_IfFromTwoInputs_Both_CannotBeConvertedToDate_ThrowsException()
         {
             // Arrange
-            string[] inputArray = new string[] { "!@#$%^&*", "!@#$%^&*" };
+            string[] inputArray = new string[2] { "!@#$%^&*", "!@#$%^&*" };
 
             // Assert
             Assert.Throws<FormatException>(() => this._validator.CheckInputArray(inputArray, this._currentCulture));
@@ -175,6 +189,47 @@ namespace DateRangeConsoleApplicationTests.Implementations.Controllers
             }
         }
 
+        //
+        [Test(Description = "Single passed input is invalid in Croatian culture")]
+        [Category("Conversion to date")]
+        public void Test_IfSingleInput_CannotBeConvertedTo_CroatianDate_ThrowsException()
+        {
+            // Assert
+            this._currentCulture = new CultureInfo("hr-HR");
+            foreach (string date in this._invalidCroatianDates)
+            {
+                string[] inputArray = new string[1] { date };
+                Console.WriteLine(inputArray[0]);
+                Assert.Throws<FormatException>(() => this._validator.CheckInputArray(inputArray, this._currentCulture));
+            }
+        }
+
+        [Test(Description = "From two passed inputs, first is invalid in Croatian culture")]
+        [Category("Conversion to date")]
+        public void Test_IfFromTwoInputs_First_CannotBeConvertedTo_CroatianDate_ThrowsException()
+        {
+            // Assert
+            this._currentCulture = new CultureInfo("hr-HR");
+            foreach (string date in this._invalidCroatianDates)
+            {
+                string[] inputArray = new string[2] { date, "2017/11/09" };
+                Assert.Throws<FormatException>(() => this._validator.CheckInputArray(inputArray, this._currentCulture));
+            }
+        }
+
+        [Test(Description = "From two passed inputs, second is invalid in Croatian culture")]
+        [Category("Conversion to date")]
+        public void Test_IfFromTwoInputs_Second_CannotBeConvertedTo_CroatianDate_ThrowsException()
+        {
+            // Assert
+            this._currentCulture = new CultureInfo("hr-HR");
+            foreach (string date in this._invalidCroatianDates)
+            {
+                string[] inputArray = new string[2] { "2017/11/09", date };
+                Assert.Throws<FormatException>(() => this._validator.CheckInputArray(inputArray, this._currentCulture));
+            }
+        }
+
         [Test(Description = "Single input is valid in Polish culture")]
         [Category("Conversion to date")]
         public void Test_IfSingleInput_IsConvertibleTo_PolishDate_ReturnsDateTimeArray()
@@ -183,7 +238,7 @@ namespace DateRangeConsoleApplicationTests.Implementations.Controllers
             const string firstInputString = "2017-11-09";
             string[] inputArray = new string[1] { firstInputString };
             DateTime firstDate = new DateTime(2017, 11, 09);
-            DateTime[] expectedDateArray = new DateTime[] { firstDate };
+            DateTime[] expectedDateArray = new DateTime[1] { firstDate };
 
             // Act
             DateTime[] actualDateArray = this._validator.CheckInputArray(inputArray, this._currentCulture);
@@ -202,7 +257,7 @@ namespace DateRangeConsoleApplicationTests.Implementations.Controllers
             string[] inputArray = new string[2] { firstInputString, secondInputString };
             DateTime firstDate = new DateTime(2017, 11, 09);
             DateTime secondDate = new DateTime(2017, 11, 10);
-            DateTime[] expectedDateArray = new DateTime[] { firstDate, secondDate };
+            DateTime[] expectedDateArray = new DateTime[2] { firstDate, secondDate };
 
             // Act
             DateTime[] actualDateArray = this._validator.CheckInputArray(inputArray, this._currentCulture);
@@ -220,7 +275,7 @@ namespace DateRangeConsoleApplicationTests.Implementations.Controllers
             string[] inputArray = new string[1] { firstInputString };
             this._currentCulture = new CultureInfo("ja-JP");
             DateTime firstDate = new DateTime(2017, 11, 09);
-            DateTime[] expectedDateArray = new DateTime[] { firstDate };
+            DateTime[] expectedDateArray = new DateTime[1] { firstDate };
 
             // Act
             DateTime[] actualDateArray = this._validator.CheckInputArray(inputArray, this._currentCulture);
@@ -240,7 +295,48 @@ namespace DateRangeConsoleApplicationTests.Implementations.Controllers
             this._currentCulture = new CultureInfo("ja-JP");
             DateTime firstDate = new DateTime(2017, 11, 09);
             DateTime secondDate = new DateTime(2017, 11, 10);
-            DateTime[] expectedDateArray = new DateTime[] { firstDate, secondDate };
+            DateTime[] expectedDateArray = new DateTime[2] { firstDate, secondDate };
+
+            // Act
+            DateTime[] actualDateArray = this._validator.CheckInputArray(inputArray, this._currentCulture);
+
+            // Assert
+            Assert.AreEqual(expectedDateArray, actualDateArray);
+        }
+
+        //
+        [Test(Description = "Single input is valid in Croatian culture")]
+        [Category("Conversion to date")]
+        public void Test_IfSingleInput_IsConvertibleTo_CroatianDate_ReturnsDateTimeArray()
+        {
+            // Arrange
+            const string firstInputString = "1.1.2017.";
+            string[] inputArray = new string[1] { firstInputString };
+            this._currentCulture = new CultureInfo("hr-HR");
+            DateTime firstDate = new DateTime(2017, 1, 1);
+            DateTime[] expectedDateArray = new DateTime[1] { firstDate };
+
+            // Act
+            DateTime[] actualDateArray = this._validator.CheckInputArray(inputArray, this._currentCulture);
+
+            // Assert
+            Assert.AreEqual(expectedDateArray, actualDateArray);
+        }
+
+        [Test(Description = "Three inputs are valid in Croatian culture")]
+        [Category("Conversion to date")]
+        public void Test_IfThreeInputs_AreConvertibleTo_CroatianDate_ReturnsDateTimeArray()
+        {
+            // Arrange
+            const string firstInputString = "1.01.2017.";
+            const string secondInputString = "02.1.2017.";
+            const string thirdInputString = "03.01.2017.";
+            string[] inputArray = new string[3] { firstInputString, secondInputString, thirdInputString };
+            this._currentCulture = new CultureInfo("hr-HR");
+            DateTime firstDate = new DateTime(2017, 1, 1);
+            DateTime secondDate = new DateTime(2017, 1, 2);
+            DateTime thirdDate = new DateTime(2017, 1, 3);
+            DateTime[] expectedDateArray = new DateTime[3] { firstDate, secondDate, thirdDate };
 
             // Act
             DateTime[] actualDateArray = this._validator.CheckInputArray(inputArray, this._currentCulture);
