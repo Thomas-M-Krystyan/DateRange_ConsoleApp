@@ -1,5 +1,5 @@
 ## DESCRIPTION
-The stable first release version of the application which gets inputs (corresponding<br>
+The stable first release version of the application which gets inputs (that corresponding<br>
 to date formats) as program arguments, and makes culture dependent date ranges from them.
 
 ## INSTALLATION
@@ -21,7 +21,7 @@ Git Bash, or similar tool. Search for `.exe` file in your catalog (move deeper b
 to get path: `[YOUR LOCATION]\DateRange_ConsoleApp\DateRangeConsoleApplication\bin`.<br>
 Choose `Debug` or `Release` catalog in which you find `DateRangeConsoleApplication.exe` file
 2. (Method no.2) Use already compiled program:
-- download [Program.exe](https://github.com/Thomas-M-Krystyan/DateRange_ConsoleApp/releases/download/v1.0.0/Program.exe) file from GitHub repository
+- download [Program.exe](https://github.com/Thomas-M-Krystyan/DateRange_ConsoleApp/releases/download/v1.1.1/Program.exe) file from GitHub repository
 - find the executable file by CMD.exe (_Windows_), CLI (_Linux_), PowerShell, Git Bash, or similar<br>
 tool. Search for `Program.exe` file in your download catalog (move deeper by `cd` command)
 
@@ -34,27 +34,31 @@ tool. Search for `Program.exe` file in your download catalog (move deeper by `cd
 
 #### Expected results:
 ```
-1)  Program.exe  05.01.2017
+1)  Program.exe
+
+> ERROR: Input cannot be empty!
+
+2)  Program.exe  05.01.2017
 
 > 05.01.2017
 
-2)  Program.exe  05.01.2017  05.01.2017
+3)  Program.exe  05.01.2017  05.01.2017
 
 > 05.01.2017
 
-3)  Program.exe  02.01.2017  03.01.2017  05.01.2017
+4)  Program.exe  02.01.2017  03.01.2017  05.01.2017
 
 > 02-05.01.2017
 
-4)  Program.exe  02.01.2017  20.02.2017  01.03.2017  15.03.2017
+5)  Program.exe  02.01.2017  20.02.2017  01.03.2017  15.03.2017
 
 > 02.01 – 15.03.2017
 
-5)  Program.exe  05.01.2016  05.01.2017  05.01.2018
+6)  Program.exe  05.01.2016  05.01.2017  05.01.2018
 
 > 05.01.2016 – 05.01.2018
 
-6)  Program.exe  31.12.2020  01.01.2015
+7)  Program.exe  31.12.2020  01.01.2015
 
 > ERROR: The previous date "31.12.2020" cannot be later
   than the farther one "01.01.2015"!
